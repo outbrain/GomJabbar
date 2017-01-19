@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,8 +66,7 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
     return health.fetchInstancesHealth(module, dc)
       .transform(instances ->
         randomElement(
-          instances
-            .stream()
+          instances.stream()
             .filter(instance -> instance.Checks.stream().allMatch(check -> "passing".equals(check.Status)))
             .map(instance -> new Target(instance.Node.Node, instance.Service.Service, extractServicetype(instance)))
             .collect(Collectors.toList()), e -> new Target(UNDEFINED, module, UNDEFINED)));
@@ -92,11 +93,11 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
     throw new IllegalStateException("what?");
   }
 
-  public static void main(final String[] args) throws ExecutionException, InterruptedException {
+  public static void main(final String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     // run with -Dcom.outbrain.ob1k.consul.agent.address=my.consul.host:8500
     final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog());
     for (int i = 0; i < 100; i++) {
-      System.out.println(targetsCollector.chooseTarget().get());
+      System.out.println(targetsCollector.chooseTarget().get(10, TimeUnit.SECONDS));
     }
   }
 }

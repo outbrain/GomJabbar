@@ -13,6 +13,7 @@ public class Target {
   private final String serviceType;
 
 
+
   public Target(final String host, final String module, final String serviceType) {
     this.host = Objects.requireNonNull(host, "host must not be null");
     this.module = Objects.requireNonNull(module, "module must not be null");
@@ -22,5 +23,17 @@ public class Target {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this).add("module", module).add("host", host).add("serviceType", serviceType).toString();
+  }
+
+  public String getHost() {
+    return host;
+  }
+
+  public String getModule() {
+    return module;
+  }
+
+  public String getServiceType() {
+    return serviceType;
   }
 }
