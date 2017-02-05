@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -68,8 +69,8 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
         randomElement(
           instances.stream()
             .filter(instance -> instance.Checks.stream().allMatch(check -> "passing".equals(check.Status)))
-            .map(instance -> new Target(instance.Node.Node, instance.Service.Service, extractServicetype(instance)))
-            .collect(Collectors.toList()), e -> new Target(UNDEFINED, module, UNDEFINED)));
+            .map(instance -> new Target(instance.Node.Node, instance.Service.Service, extractServicetype(instance), instance.Service.Tags))
+            .collect(Collectors.toList()), e -> new Target(UNDEFINED, module, UNDEFINED, new HashSet<String>())));
   }
 
   private String extractServicetype(final HealthInfoInstance instance) {
