@@ -69,8 +69,8 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
         randomElement(
           instances.stream()
             .filter(instance -> instance.Checks.stream().allMatch(check -> "passing".equals(check.Status)))
-            .map(instance -> new Target(instance.Node.Node, instance.Service.Service, extractServicetype(instance), instance.Service.Tags))
-            .collect(Collectors.toList()), e -> new Target(UNDEFINED, module, UNDEFINED, new HashSet<String>())));
+            .map(instance -> new Target(instance.Node.Node, instance.Service.Service, extractServicetype(instance), instances.size(), instance.Service.Tags))
+            .collect(Collectors.toList()), e -> new Target(UNDEFINED, module, UNDEFINED, 0, new HashSet<String>())));
   }
 
   private String extractServicetype(final HealthInfoInstance instance) {
