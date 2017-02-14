@@ -1,8 +1,5 @@
 package com.outbrain.gomjabbar;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * @author Eran Harel
  */
@@ -34,9 +31,4 @@ public class RundeckCommand {
     return project;
   }
 
-  public static void main(String[] args) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    final String s = objectMapper.writeValueAsString(new RundeckCommand("host", "cmd"));
-    System.out.println(s);
-  }
 }

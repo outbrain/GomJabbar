@@ -8,7 +8,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.util.Collections;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -35,7 +37,11 @@ public class GomJaabbar {
   }
 
   private static void selectAndKillTarget(final String authToken, final String runDeckHost) throws InterruptedException, ExecutionException, TimeoutException {
-    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog());
+    final Set<String> excludedDCs = Collections.singleton("il");
+    final Set<String> excludedModules = Collections.emptySet();
+    final Set<String> includedServiceTypes = Collections.singleton("ob1k");
+
+    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(excludedDCs, excludedModules, includedServiceTypes));
     Target target = selectTarget(targetsCollector);
 
     try (Scanner in = new Scanner(System.in)) {

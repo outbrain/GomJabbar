@@ -128,7 +128,7 @@
     <dependency>
       <groupId>com.outbrain.swinfra</groupId>
       <artifactId>ob1k-consul</artifactId>
-      <version>0.184-SNAPSHOT</version>
+      <version>0.192</version>
     </dependency>
 
     <dependency>
@@ -169,6 +169,6 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
- 
- </dependencies>
+
+  </dependencies>
 </project>
