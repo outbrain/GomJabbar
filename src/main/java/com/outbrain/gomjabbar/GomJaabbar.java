@@ -44,15 +44,20 @@ public class GomJaabbar {
     final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(excludedDCs, excludedModules, includedServiceTypes));
     Target target = selectTarget(targetsCollector);
 
+    final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
+//    final FaultInjector faultInjector = new DummyRemoteFailureInjector(rundeckCommandExecutor);
+//    final FaultInjector faultInjector = new DummyFault();
+    final FaultInjector faultInjector = new InitdStopper(rundeckCommandExecutor);
+
     try (Scanner in = new Scanner(System.in)) {
 
       while (in.hasNext()) {
         final String input = in.next();
         if ("Y".equals(input)) {
-          new InitdStopper(authToken, runDeckHost).injectFailure(target);
-        } else {
-          target = selectTarget(targetsCollector);
+          faultInjector.injectFailure(target);
         }
+
+        target = selectTarget(targetsCollector);
       }
     }
 
