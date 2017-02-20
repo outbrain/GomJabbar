@@ -48,7 +48,7 @@ public class RundeckCommandExecutor {
       });
 
     try {
-      rundeckCommandResponseFuture.get(10, TimeUnit.SECONDS);
+      rundeckCommandResponseFuture.get(1, TimeUnit.MINUTES);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
       e.printStackTrace();
     }

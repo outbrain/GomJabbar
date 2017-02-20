@@ -8,6 +8,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Scanner;
 import java.util.Set;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeoutException;
  * @author Eran Harel
  */
 public class GomJaabbar {
-  public static void main(final String[] args) throws InterruptedException, ExecutionException, TimeoutException, ParseException {
+  public static void main(final String[] args) throws InterruptedException, ExecutionException, TimeoutException, ParseException, IOException {
 
     final Options options = new Options();
     options.addOption("a", "authtoken", true, "rundeck auth token");
@@ -36,7 +37,7 @@ public class GomJaabbar {
     selectAndKillTarget(authToken, runDeckHost);
   }
 
-  private static void selectAndKillTarget(final String authToken, final String runDeckHost) throws InterruptedException, ExecutionException, TimeoutException {
+  private static void selectAndKillTarget(final String authToken, final String runDeckHost) throws InterruptedException, ExecutionException, TimeoutException, IOException {
     final Set<String> excludedDCs = Collections.singleton("il");
     final Set<String> excludedModules = Collections.emptySet();
     final Set<String> includedServiceTypes = Collections.singleton("ob1k");
@@ -45,15 +46,18 @@ public class GomJaabbar {
     Target target = selectTarget(targetsCollector);
 
     final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
-//    final FaultInjector faultInjector = new DummyRemoteFailureInjector(rundeckCommandExecutor);
+    final FaultInjector faultInjector = new DummyRemoteFailureInjector(rundeckCommandExecutor);
 //    final FaultInjector faultInjector = new DummyFault();
-    final FaultInjector faultInjector = new InitdStopper(rundeckCommandExecutor);
+//    final FaultInjector faultInjector = new InitdStopper(rundeckCommandExecutor);
+
+    final AuditLog auditLog = new AuditLog();
 
     try (Scanner in = new Scanner(System.in)) {
 
       while (in.hasNext()) {
         final String input = in.next();
         if ("Y".equals(input)) {
+          auditLog.log(new Fault(target, faultInjector.id()));
           faultInjector.injectFailure(target);
         }
 
@@ -74,7 +78,7 @@ public class GomJaabbar {
   }
 
   private static Target selectTarget(final TargetsCollector targetsCollector) throws InterruptedException, ExecutionException, TimeoutException {
-    final Target target = targetsCollector.chooseTarget().get(10, TimeUnit.SECONDS);
+    final Target target = targetsCollector.chooseTarget().get(30, TimeUnit.SECONDS);
     System.out.printf("Activate failure on the following target (Y/N)?\n%s\n", target);
     return target;
   }

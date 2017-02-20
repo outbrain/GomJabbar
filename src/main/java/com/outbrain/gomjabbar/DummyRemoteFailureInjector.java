@@ -14,6 +14,11 @@ public class DummyRemoteFailureInjector implements FaultInjector {
   }
 
   @Override
+  public String id() {
+    return getClass().getName();
+  }
+
+  @Override
   public void injectFailure(final Target target) {
     final RundeckCommand command = new RundeckCommand(target.getHost(), "for i in `seq 1 5`; do echo $i; sleep 1; done\n");
     commandExecutor.executeCommand(command);

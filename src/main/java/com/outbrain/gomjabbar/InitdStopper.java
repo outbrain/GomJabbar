@@ -14,6 +14,11 @@ public class InitdStopper implements FaultInjector {
   }
 
   @Override
+  public String id() {
+    return getClass().getName();
+  }
+
+  @Override
   public void injectFailure(final Target target) {
     final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo service %s stop", target.getModule()));
     commandExecutor.executeCommand(command);
