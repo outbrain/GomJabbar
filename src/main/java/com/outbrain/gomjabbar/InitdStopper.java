@@ -1,5 +1,7 @@
 package com.outbrain.gomjabbar;
 
+import com.outbrain.ob1k.concurrent.ComposableFuture;
+
 import java.util.Objects;
 
 /**
@@ -19,8 +21,13 @@ public class InitdStopper implements FaultInjector {
   }
 
   @Override
-  public void injectFailure(final Target target) {
+  public String description() {
+    return "Gracefully shuts down services";
+  }
+
+  @Override
+  public ComposableFuture<String> injectFailure(final Target target) {
     final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo service %s stop", target.getModule()));
-    commandExecutor.executeCommand(command);
+    return commandExecutor.executeCommandAsync(command);
   }
 }

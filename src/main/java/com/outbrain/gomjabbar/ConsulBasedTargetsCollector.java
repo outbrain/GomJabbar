@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
@@ -29,7 +30,6 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
 
   private static final Logger log = LoggerFactory.getLogger(ConsulBasedTargetsCollector.class);
 
-  private final Random random = new Random();
   private final ConsulHealth health;
   private final ConsulCatalog catalog;
   private final TargetFilters targetFilters;
@@ -84,7 +84,7 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
 
     final int tries = filteredElements.size() * 20;
     for (int i = 0; i < tries; i++) {
-      final T element = filteredElements.get(random.nextInt(filteredElements.size()));
+      final T element = filteredElements.get(ThreadLocalRandom.current().nextInt(filteredElements.size()));
       if(element != null) {
         return ComposableFutures.fromValue(element);
       }

@@ -1,5 +1,7 @@
 package com.outbrain.gomjabbar;
 
+import com.outbrain.ob1k.concurrent.ComposableFuture;
+
 import java.util.Objects;
 
 /**
@@ -19,8 +21,13 @@ public class DummyRemoteFailureInjector implements FaultInjector {
   }
 
   @Override
-  public void injectFailure(final Target target) {
+  public String description() {
+    return "Runs a harmless shell command on remote targets - should take about 5 sec to complete";
+  }
+
+  @Override
+  public ComposableFuture<String> injectFailure(final Target target) {
     final RundeckCommand command = new RundeckCommand(target.getHost(), "for i in `seq 1 5`; do echo $i; sleep 1; done\n");
-    commandExecutor.executeCommand(command);
+    return commandExecutor.executeCommandAsync(command);
   }
 }

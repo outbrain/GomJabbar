@@ -1,9 +1,12 @@
 package com.outbrain.gomjabbar;
 
+import com.outbrain.ob1k.concurrent.ComposableFuture;
+
 /**
  * @author Eran Harel
  */
 public interface FaultInjector {
   String id();
-  void injectFailure(final Target target);
+  String description();
+  ComposableFuture<String> injectFailure(final Target target);
 }
