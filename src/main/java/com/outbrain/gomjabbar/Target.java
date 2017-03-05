@@ -18,6 +18,10 @@ public class Target {
   private final Set<String> tags;
   private final int instanceCount;
 
+  Target() {
+    // bahhhhhh
+    this("", "", "", 0, Collections.emptySet());
+  }
 
   public Target(final String host, final String module, final String serviceType, final int instanceCount, final Set<String> tags) {
     this.host = Objects.requireNonNull(host, "host must not be null");
