@@ -1,5 +1,10 @@
 package com.outbrain.gomjabbar;
 
+import com.outbrain.gomjabbar.audit.AuditLog;
+import com.outbrain.gomjabbar.faults.Fault;
+import com.outbrain.gomjabbar.faults.FaultInjectors;
+import com.outbrain.gomjabbar.targets.Target;
+import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.cache.LocalAsyncCache;
 import com.outbrain.ob1k.cache.TypedCache;
 import com.outbrain.ob1k.concurrent.ComposableFuture;

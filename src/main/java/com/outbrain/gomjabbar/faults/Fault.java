@@ -1,4 +1,6 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.faults;
+
+import com.outbrain.gomjabbar.targets.Target;
 
 import java.util.Objects;
 

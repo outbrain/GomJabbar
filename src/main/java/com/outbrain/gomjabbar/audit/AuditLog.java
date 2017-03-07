@@ -1,7 +1,8 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.audit;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.outbrain.gomjabbar.faults.Fault;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

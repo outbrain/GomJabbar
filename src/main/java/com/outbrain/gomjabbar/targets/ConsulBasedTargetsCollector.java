@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.targets;
 
 import com.outbrain.ob1k.concurrent.ComposableFuture;
 import com.outbrain.ob1k.concurrent.ComposableFutures;
@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
@@ -34,7 +33,7 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
   private final ConsulCatalog catalog;
   private final TargetFilters targetFilters;
 
-  ConsulBasedTargetsCollector(final ConsulHealth health, final ConsulCatalog catalog, final TargetFilters targetFilters) {
+  public ConsulBasedTargetsCollector(final ConsulHealth health, final ConsulCatalog catalog, final TargetFilters targetFilters) {
     this.catalog = catalog;
     this.health = Objects.requireNonNull(health, "health must not be null");
     this.targetFilters = Objects.requireNonNull(targetFilters, "targetFilters must not be null");

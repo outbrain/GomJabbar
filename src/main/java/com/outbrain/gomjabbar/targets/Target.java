@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.targets;
 
 import com.google.common.base.MoreObjects;
 

@@ -1,5 +1,15 @@
 package com.outbrain.gomjabbar;
 
+import com.outbrain.gomjabbar.audit.AuditLog;
+import com.outbrain.gomjabbar.faults.DummyRemoteFailureInjector;
+import com.outbrain.gomjabbar.faults.Fault;
+import com.outbrain.gomjabbar.faults.FaultInjector;
+import com.outbrain.gomjabbar.faults.FaultInjectors;
+import com.outbrain.gomjabbar.faults.RundeckCommandExecutor;
+import com.outbrain.gomjabbar.targets.ConsulBasedTargetsCollector;
+import com.outbrain.gomjabbar.targets.DefaultTargetsFilter;
+import com.outbrain.gomjabbar.targets.Target;
+import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.consul.ConsulAPI;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.faults;
 
 /**
  * @author Eran Harel

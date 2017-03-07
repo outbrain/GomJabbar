@@ -1,5 +1,6 @@
 package com.outbrain.gomjabbar;
 
+import com.outbrain.gomjabbar.targets.Target;
 import com.outbrain.ob1k.concurrent.ComposableFuture;
 
 import java.util.Map;

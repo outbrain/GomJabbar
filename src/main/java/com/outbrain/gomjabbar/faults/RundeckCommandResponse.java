@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.faults;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;

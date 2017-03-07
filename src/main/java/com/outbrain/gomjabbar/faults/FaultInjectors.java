@@ -1,13 +1,12 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.faults;
 
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang3.tuple.Pair;
+import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -17,9 +16,22 @@ public class FaultInjectors {
 
   private final Map<String, FaultInjector> faultInjectors = new HashMap<>();
 
-  FaultInjectors(final Collection<FaultInjector> faultInjectors) {
+  public FaultInjectors(final Collection<FaultInjector> faultInjectors) {
     Preconditions.checkArgument(!(faultInjectors == null || faultInjectors.isEmpty()), "faultInjectors must not be null or empty");
     faultInjectors.forEach(faultInjector -> this.faultInjectors.put(faultInjector.id(), faultInjector));
+  }
+
+  // TODO externalize
+  public static FaultInjectors defaultFaultInjectors() {
+    final String authToken = System.getProperty("com.outbrain.gomjabbar.rundeckAuthToken");
+    final String runDeckHost = System.getProperty("com.outbrain.gomjabbar.rundeckHost");
+
+    // OK, this should load it from somewhere later...
+    final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
+    final FaultInjector dummyRemoteFailureInjector = new DummyRemoteFailureInjector(rundeckCommandExecutor);
+    final FaultInjector dummyLocalFault = new DummyFault();
+    final FaultInjector gracefulShutdownInjector = new InitdStopper(rundeckCommandExecutor);
+    return new FaultInjectors(Lists.newArrayList(dummyRemoteFailureInjector, dummyLocalFault, gracefulShutdownInjector));
   }
 
   public FaultInjector selectFaultInjector() {

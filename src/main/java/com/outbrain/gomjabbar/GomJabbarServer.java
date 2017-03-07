@@ -1,5 +1,10 @@
 package com.outbrain.gomjabbar;
 
+import com.outbrain.gomjabbar.audit.AuditLog;
+import com.outbrain.gomjabbar.faults.FaultInjectors;
+import com.outbrain.gomjabbar.targets.ConsulBasedTargetsCollector;
+import com.outbrain.gomjabbar.targets.DefaultTargetsFilter;
+import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.consul.ConsulAPI;
 import com.outbrain.ob1k.server.Server;
 import com.outbrain.ob1k.server.builder.ServerBuilder;
@@ -45,7 +50,7 @@ public class GomJabbarServer {
     return ServerBuilder.newBuilder()
       .contextPath(CTX_PATH)
       .configure(builder -> builder.usePort(port).requestTimeout(requestTimeout, TimeUnit.SECONDS))
-      .service(builder -> builder.register(new GomJabbarServiceImpl(createFaultInjectors(), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
+      .service(builder -> builder.register(new GomJabbarServiceImpl(FaultInjectors.defaultFaultInjectors(), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
       .withExtension(registerMappingService("/endpoints"))
       .build();
   }
@@ -57,20 +62,6 @@ public class GomJabbarServer {
     final Set<String> includedServiceTypes = Collections.singleton("ob1k");
 
     return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(excludedDCs, excludedModules, includedServiceTypes));
-  }
-
-  // TODO externalize
-  private FaultInjectors createFaultInjectors() {
-
-    final String authToken = System.getProperty("com.outbrain.gomjabbar.rundeckAuthToken");
-    final String runDeckHost = System.getProperty("com.outbrain.gomjabbar.rundeckHost");
-
-    // OK, this should load it from somewhere later...
-    final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
-    final FaultInjector faultInjector = new DummyRemoteFailureInjector(rundeckCommandExecutor);
-//    final FaultInjector faultInjector = new DummyFault();
-//    final FaultInjector faultInjector = new InitdStopper(rundeckCommandExecutor);
-    return new FaultInjectors(Collections.singleton(faultInjector));
   }
 
 }

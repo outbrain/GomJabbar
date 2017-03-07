@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar;
+package com.outbrain.gomjabbar.targets;
 
 import com.outbrain.ob1k.consul.HealthInfoInstance;
 import com.outbrain.ob1k.consul.TagsUtil;
@@ -16,7 +16,7 @@ public class DefaultTargetsFilter implements TargetFilters {
   private final Set<String> excludeDCs;
   private final Set<String> excludeModules;
 
-  DefaultTargetsFilter(final Set<String> excludeDCs, final Set<String> excludeModules, final Set<String> includeServiceTypes) {
+  public DefaultTargetsFilter(final Set<String> excludeDCs, final Set<String> excludeModules, final Set<String> includeServiceTypes) {
     this.excludeDCs = new HashSet<>(excludeDCs);
     this.excludeModules = new HashSet<>(excludeModules);
     this.includeServiceTypes = new HashSet<>(includeServiceTypes);
