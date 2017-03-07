@@ -31,4 +31,10 @@ public class InitdStopper implements FaultInjector {
     final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo service %s stop", target.getModule()));
     return commandExecutor.executeCommandAsync(command);
   }
+
+  @Override
+  public ComposableFuture<String> revertFailure(final Target target) {
+    final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo service %s start", target.getModule()));
+    return commandExecutor.executeCommandAsync(command);
+  }
 }

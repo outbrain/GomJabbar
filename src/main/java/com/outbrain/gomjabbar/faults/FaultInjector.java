@@ -10,4 +10,5 @@ public interface FaultInjector {
   String id();
   String description();
   ComposableFuture<String> injectFailure(final Target target);
+  ComposableFuture<String> revertFailure(final Target target);
 }

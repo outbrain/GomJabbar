@@ -10,6 +10,7 @@ import com.outbrain.ob1k.cache.TypedCache;
 import com.outbrain.ob1k.concurrent.ComposableFuture;
 import com.outbrain.ob1k.concurrent.ComposableFutures;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -56,5 +57,10 @@ public class GomJabbarServiceImpl implements GomJabbarService {
           faultInjectors.getFaultInjector(faultId)
             .injectFailure(target)
             .andThen(__ -> auditLog.log(new Fault(target, faultId))));
+  }
+
+  @Override
+  public ComposableFuture<Collection<Fault>> log() {
+    return ComposableFutures.submit(true, auditLog::list);
   }
 }

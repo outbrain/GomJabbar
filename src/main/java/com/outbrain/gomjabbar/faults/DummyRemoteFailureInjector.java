@@ -2,6 +2,7 @@ package com.outbrain.gomjabbar.faults;
 
 import com.outbrain.gomjabbar.targets.Target;
 import com.outbrain.ob1k.concurrent.ComposableFuture;
+import com.outbrain.ob1k.concurrent.ComposableFutures;
 
 import java.util.Objects;
 
@@ -30,5 +31,10 @@ public class DummyRemoteFailureInjector implements FaultInjector {
   public ComposableFuture<String> injectFailure(final Target target) {
     final RundeckCommand command = new RundeckCommand(target.getHost(), "for i in `seq 1 5`; do echo $i; sleep 1; done\n");
     return commandExecutor.executeCommandAsync(command);
+  }
+
+  @Override
+  public ComposableFuture<String> revertFailure(final Target target) {
+    return ComposableFutures.fromValue("Dummy reverted target " + target);
   }
 }

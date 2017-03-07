@@ -21,7 +21,13 @@ public class DummyFault implements FaultInjector {
 
   @Override
   public ComposableFuture<String> injectFailure(final Target target) {
-    System.out.println("\"Failing\" " + target);
+    System.out.println("Failing " + target);
     return ComposableFutures.fromValue("Let's pretend I did it K?");
+  }
+
+  @Override
+  public ComposableFuture<String> revertFailure(final Target target) {
+    System.out.println("Reverting " + target);
+    return ComposableFutures.fromValue("Let's pretend I reverted it K?");
   }
 }
