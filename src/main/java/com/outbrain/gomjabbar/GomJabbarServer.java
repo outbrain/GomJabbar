@@ -18,9 +18,9 @@ import static com.outbrain.ob1k.server.endpoints.EndpointMappingServiceBuilder.r
 public class GomJabbarServer {
   private static final Logger logger = LoggerFactory.getLogger(GomJabbarServer.class);
 
-  public static final int PORT = 8080;
-  public static final String CTX_PATH = "/gj";
-  public static final String SERVICE_PATH = "/api";
+  private static final int PORT = 8080;
+  private static final String CTX_PATH = "/gj";
+  private static final String SERVICE_PATH = "/api";
 
   private Server server;
 
@@ -28,7 +28,7 @@ public class GomJabbarServer {
     new GomJabbarServer().start(PORT);
   }
 
-  public void start(final int port) {
+  private void start(final int port) {
     server = buildServer(port);
     server.start();
     logger.info("## {} is started on port: {} ##", getClass().getSimpleName(), port);
@@ -41,10 +41,11 @@ public class GomJabbarServer {
   }
 
   private Server buildServer(final int port) {
+    final long requestTimeout = 30;
     return ServerBuilder.newBuilder()
       .contextPath(CTX_PATH)
-      .configure(builder -> builder.usePort(port).requestTimeout(30, TimeUnit.SECONDS))
-      .service(builder -> builder.register(new GomJabbarService(createFaultInjectors(), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
+      .configure(builder -> builder.usePort(port).requestTimeout(requestTimeout, TimeUnit.SECONDS))
+      .service(builder -> builder.register(new GomJabbarServiceImpl(createFaultInjectors(), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
       .withExtension(registerMappingService("/endpoints"))
       .build();
   }
