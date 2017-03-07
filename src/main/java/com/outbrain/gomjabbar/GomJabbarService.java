@@ -43,8 +43,10 @@ public class GomJabbarService implements com.outbrain.ob1k.Service {
   public ComposableFuture<String> trigger(final String targetToken, final String faultId) {
     return targetsCache.getAsync(targetToken)
       .flatMap(target ->
-        faultInjectors.getFaultInjector(faultId)
-          .injectFailure(target)
-          .andThen(__ -> auditLog.log(new Fault(target, faultId))));
+        target == null ?
+          ComposableFutures.fromValue("Token " + targetToken + " has expired") :
+          faultInjectors.getFaultInjector(faultId)
+            .injectFailure(target)
+            .andThen(__ -> auditLog.log(new Fault(target, faultId))));
   }
 }
