@@ -3,13 +3,15 @@ package com.outbrain.gomjabbar.audit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.outbrain.gomjabbar.faults.Fault;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -30,24 +32,34 @@ public class AuditLog {
   }
 
   public void log(final Fault fault) {
-    try (final BufferedWriter writer = Files.newBufferedWriter(Files.createTempFile(logDir, "fault", ".json"))) {
+    try (final BufferedWriter writer = Files.newBufferedWriter(Files.createTempFile(logDir, "fault", ""))) {
       objectMapper.writeValue(writer, fault);
     } catch (final IOException e) {
       throw new RuntimeException("Failed to audit", e);
     }
   }
 
-  public Collection<Fault> list() {
+  public Map<String, Fault> list() {
     try {
-      return Files.list(logDir).map(path -> {
-        try {
-          return objectMapper.readValue(path.toFile(), Fault.class);
-        } catch (IOException e) {
-          throw new RuntimeException("Failed to read audit entry " + path, e);
-        }
-      }).collect(Collectors.toList());
-    } catch (IOException e) {
+      return Files.list(logDir)
+        .map(path -> Pair.of(path.getFileName().toString(),
+          readFault(path).orElseThrow(() -> new RuntimeException("Failed to read fault entry"))))
+        .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+    } catch (final IOException e) {
       throw new RuntimeException("Failed to list audit entries", e);
     }
   }
+
+  private Optional<Fault> readFault(final Path path) {
+    try {
+      return Optional.of(objectMapper.readValue(path.toFile(), Fault.class));
+    } catch (final IOException e) {
+      return Optional.empty();
+    }
+  }
+
+  public Optional<Fault> findFault(final String faultId) {
+    return readFault(Paths.get(logDir.toString(), faultId));
+  }
+
 }

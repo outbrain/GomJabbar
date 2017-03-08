@@ -17,5 +17,9 @@ public interface GomJabbarService extends com.outbrain.ob1k.Service {
 
   ComposableFuture<String> trigger(String targetToken, String faultId);
 
-  ComposableFuture<Collection<Fault>> log();
+  ComposableFuture<Map<String, Fault>> log();
+
+  ComposableFuture<String> revert(String faultId);
+
+  ComposableFuture<String> revertAll();
 }
