@@ -28,7 +28,7 @@ public class GomJabbarServiceImpl implements GomJabbarService {
   private final TargetsCollector targetsCollector;
   private final AuditLog auditLog;
 
-  private final TypedCache<String, Target> targetsCache = new LocalAsyncCache<>(1000, 5, TimeUnit.MINUTES, null, "targets");
+  private final TypedCache<String, Target> targetsCache = new LocalAsyncCache<>(10000, 2, TimeUnit.HOURS, null, "targets");
 
   GomJabbarServiceImpl(final FaultInjectors faultInjectors, final TargetsCollector targetsCollector, final AuditLog auditLog) {
     this.faultInjectors = Objects.requireNonNull(faultInjectors, "faultInjectors must not be null");
