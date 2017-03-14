@@ -1,0 +1,55 @@
+filters:
+  clusters:
+    include:
+    exclude:
+    - il
+
+  modules:
+    include:
+    exclude:
+    # data infra
+    - DataInfraScripts
+    - DataSupervisor
+    - WorkflowEngine
+    - WFEHTCService
+    # sphere
+    - SphereChatPusher
+    - SpherePushConfiguration
+    - SphereTrendingDocumentsTopologyDeployer
+    - SphereUserClusteringEngine
+    - SphereUserReports
+    # recs
+    - Convergine
+    - PVACEngine
+    - Pandemic
+    - CampaignAnalyzer
+    - WhatIsWrong
+    - AdCtrExplorationImpressions
+    - AdCtrExplorationClicks
+    - RevShaper
+    - LibRecRunner
+    # app services
+    - DoctorWho
+    - Mash
+    # delivery
+    - GluFeeder
+    # amplify
+    - AdOnAir
+    - PCEngine
+    - AdsCreation
+    - Neo
+    - Eve
+
+
+  service-types:
+    include:
+    exclude:
+
+  tags:
+    include:
+    exclude:
+    - docker
+    - dev
+    - rnd
+    - test
+    - simulator
