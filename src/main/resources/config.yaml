@@ -43,6 +43,8 @@ filters:
 
   service-types:
     include:
+    - ob1k
+    - node
     exclude:
 
   tags:
