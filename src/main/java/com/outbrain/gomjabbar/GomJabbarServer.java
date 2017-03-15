@@ -59,9 +59,10 @@ public class GomJabbarServer {
   private TargetsCollector creteTargetsCollector() {
     final Set<String> excludedDCs = Collections.singleton("il");
     final Set<String> excludedModules = Collections.emptySet();
-    final Set<String> includedServiceTypes = Collections.singleton("ob1k");
+    final Set<String> includedTags = Collections.singleton("servicetype-ob1k");
+    final Set<String> excludedTags = Collections.singleton("docker");
 
-    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(excludedDCs, excludedModules, includedServiceTypes));
+    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(Collections.emptySet(), excludedDCs, Collections.emptySet(), excludedModules, includedTags, excludedTags));
   }
 
 }

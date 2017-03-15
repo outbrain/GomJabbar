@@ -1,8 +1,9 @@
 package com.outbrain.gomjabbar.targets;
 
 import com.outbrain.ob1k.consul.HealthInfoInstance;
-import com.outbrain.ob1k.consul.TagsUtil;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -12,30 +13,43 @@ import java.util.function.Predicate;
  */
 public class DefaultTargetsFilter implements TargetFilters {
 
-  private final Set<String> includeServiceTypes;
+  private final Set<String> includeDCs;
   private final Set<String> excludeDCs;
+  private final Set<String> includeModules;
   private final Set<String> excludeModules;
+  private final Set<String> includeTags;
+  private final Set<String> excludeTags;
 
-  public DefaultTargetsFilter(final Set<String> excludeDCs, final Set<String> excludeModules, final Set<String> includeServiceTypes) {
+  public DefaultTargetsFilter(final Set<String> includeDCs, final Set<String> excludeDCs,
+                              final Set<String> includeModules, final Set<String> excludeModules,
+                              final Set<String> includeTags, final Set<String> excludeTags) {
     this.excludeDCs = new HashSet<>(excludeDCs);
+    this.includeDCs = new HashSet<>(includeDCs);
     this.excludeModules = new HashSet<>(excludeModules);
-    this.includeServiceTypes = new HashSet<>(includeServiceTypes);
+    this.includeModules = new HashSet<>(includeModules);
+    this.includeTags = new HashSet<>(includeTags);
+    this.excludeTags = new HashSet<>(excludeTags);
   }
 
   @Override
   public Predicate<String> dcFilter() {
-    return dc -> !excludeDCs.contains(dc);
+    return dc -> isIncludedAndNotExcluded(dc, includeDCs, excludeDCs);
   }
 
   @Override
   public Predicate<String> moduleFilter() {
-    return module -> !excludeModules.contains(module);
+    return module -> isIncludedAndNotExcluded(module, includeModules, excludeModules);
   }
 
   @Override
   public Predicate<HealthInfoInstance> instanceFilter() {
     return instance ->
-      includeServiceTypes.contains(TagsUtil.extractTag(instance.Service.Tags, "servicetype")) &&
-      instance.Checks.stream().allMatch(check -> "passing".equals(check.Status));
+      Collections.disjoint(instance.Service.Tags, excludeTags)
+        && (includeTags.isEmpty() || !Collections.disjoint(instance.Service.Tags, includeTags))
+        && instance.Checks.stream().allMatch(check -> "passing".equals(check.Status));
+  }
+
+  private boolean isIncludedAndNotExcluded(final String e, final Collection<String> includes, final Collection<String> excludes) {
+    return !excludes.contains(e) && (includes.isEmpty() || includes.contains(e));
   }
 }

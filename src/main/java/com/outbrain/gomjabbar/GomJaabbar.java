@@ -64,9 +64,10 @@ public class GomJaabbar {
 
     final Set<String> excludedDCs = Collections.singleton("il");
     final Set<String> excludedModules = Collections.emptySet();
-    final Set<String> includedServiceTypes = Collections.singleton("ob1k");
+    final Set<String> includedTags = Collections.singleton("servicetype-ob1k");
+    final Set<String> excludedTags = Collections.singleton("docker");
 
-    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(excludedDCs, excludedModules, includedServiceTypes));
+    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(Collections.emptySet(), excludedDCs, Collections.emptySet(), excludedModules, includedTags, excludedTags));
 
     try (Scanner in = new Scanner(System.in)) {
       while(true) {
