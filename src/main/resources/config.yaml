@@ -40,15 +40,10 @@ filters:
     - Neo
     - Eve
 
-
-  service-types:
-    include:
-    - ob1k
-    - node
-    exclude:
-
   tags:
     include:
+    - servicetype-ob1k
+    - servicetype-node
     exclude:
     - docker
     - dev

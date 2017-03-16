@@ -1,6 +1,6 @@
 package com.outbrain.gomjabbar.targets;
 
-import com.google.common.collect.Sets;
+import com.outbrain.gomjabbar.config.ConfigParser;
 import com.outbrain.ob1k.concurrent.ComposableFuture;
 import com.outbrain.ob1k.concurrent.ComposableFutures;
 import com.outbrain.ob1k.consul.ConsulAPI;
@@ -12,10 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -96,12 +94,8 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
   public static void main(final String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     // run with -Dcom.outbrain.ob1k.consul.agent.address=my.consul.host:8500
 
-    final Set<String> excludedDCs = Sets.newHashSet("il");
-    final Set<String> excludedModules = Collections.emptySet();
-    final Set<String> includedTags = Sets.newHashSet("servicetype-ob1k", "servicetype-node");
-    final Set<String> excludedTags = Collections.singleton("docker");
-
-    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(Collections.emptySet(), excludedDCs, Collections.emptySet(), excludedModules, includedTags, excludedTags));
+    final TargetFilters targetFilters = ConfigParser.parseConfiguration(ConfigParser.class.getClassLoader().getResource("config.yaml"));
+    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     for (int i = 0; i < 100; i++) {
       System.out.println(targetsCollector.chooseTarget().get(10, TimeUnit.SECONDS));

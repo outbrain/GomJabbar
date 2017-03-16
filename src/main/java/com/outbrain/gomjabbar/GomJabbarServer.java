@@ -1,9 +1,10 @@
 package com.outbrain.gomjabbar;
 
 import com.outbrain.gomjabbar.audit.AuditLog;
+import com.outbrain.gomjabbar.config.ConfigParser;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
 import com.outbrain.gomjabbar.targets.ConsulBasedTargetsCollector;
-import com.outbrain.gomjabbar.targets.DefaultTargetsFilter;
+import com.outbrain.gomjabbar.targets.TargetFilters;
 import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.consul.ConsulAPI;
 import com.outbrain.ob1k.server.Server;
@@ -11,8 +12,7 @@ import com.outbrain.ob1k.server.builder.ServerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.Set;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static com.outbrain.ob1k.server.endpoints.EndpointMappingServiceBuilder.registerMappingService;
@@ -55,14 +55,11 @@ public class GomJabbarServer {
       .build();
   }
 
-  // TODO externalize
   private TargetsCollector creteTargetsCollector() {
-    final Set<String> excludedDCs = Collections.singleton("il");
-    final Set<String> excludedModules = Collections.emptySet();
-    final Set<String> includedTags = Collections.singleton("servicetype-ob1k");
-    final Set<String> excludedTags = Collections.singleton("docker");
-
-    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(Collections.emptySet(), excludedDCs, Collections.emptySet(), excludedModules, includedTags, excludedTags));
+    // TODO this should be passed as a system property
+    final URL configFileUrl = ConfigParser.class.getClassLoader().getResource("config.yaml");
+    final TargetFilters targetFilters = ConfigParser.parseConfiguration(configFileUrl);
+    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
   }
 
 }

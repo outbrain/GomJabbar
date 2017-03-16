@@ -1,14 +1,15 @@
 package com.outbrain.gomjabbar;
 
 import com.outbrain.gomjabbar.audit.AuditLog;
+import com.outbrain.gomjabbar.config.ConfigParser;
 import com.outbrain.gomjabbar.faults.DummyRemoteFailureInjector;
 import com.outbrain.gomjabbar.faults.Fault;
 import com.outbrain.gomjabbar.faults.FaultInjector;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
 import com.outbrain.gomjabbar.faults.RundeckCommandExecutor;
 import com.outbrain.gomjabbar.targets.ConsulBasedTargetsCollector;
-import com.outbrain.gomjabbar.targets.DefaultTargetsFilter;
 import com.outbrain.gomjabbar.targets.Target;
+import com.outbrain.gomjabbar.targets.TargetFilters;
 import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.consul.ConsulAPI;
 import org.apache.commons.cli.CommandLine;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -62,15 +62,11 @@ public class GomJaabbar {
   private static void selectAndInjectFailures(final FaultInjectors faultInjectors) throws InterruptedException, ExecutionException, TimeoutException, IOException {
     final AuditLog auditLog = new AuditLog();
 
-    final Set<String> excludedDCs = Collections.singleton("il");
-    final Set<String> excludedModules = Collections.emptySet();
-    final Set<String> includedTags = Collections.singleton("servicetype-ob1k");
-    final Set<String> excludedTags = Collections.singleton("docker");
-
-    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), new DefaultTargetsFilter(Collections.emptySet(), excludedDCs, Collections.emptySet(), excludedModules, includedTags, excludedTags));
+    final TargetFilters targetFilters = ConfigParser.parseConfiguration(ConfigParser.class.getClassLoader().getResource("config.yaml"));
+    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     try (Scanner in = new Scanner(System.in)) {
-      while(true) {
+      while(!Thread.currentThread().isInterrupted()) {
         final Target target = selectTarget(targetsCollector);
         final FaultInjector faultInjector = faultInjectors.selectFaultInjector();
         System.out.printf("Activate failure on the following target / failure (Y/N)?\n%s\n%s (%s)\n", target, faultInjector.id(), faultInjector.description());
