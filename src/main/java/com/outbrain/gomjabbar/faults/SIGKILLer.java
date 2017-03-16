@@ -28,7 +28,7 @@ public class SIGKILLer implements FaultInjector {
 
   @Override
   public ComposableFuture<String> injectFailure(final Target target) {
-    final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo pkill -9 %s", target.getModule()));
+    final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo pkill -9 -f %s", target.getModule()));
     return commandExecutor.executeCommandAsync(command);
   }
 
