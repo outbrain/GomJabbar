@@ -98,7 +98,8 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
     final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     for (int i = 0; i < 100; i++) {
-      System.out.println(targetsCollector.chooseTarget().get(10, TimeUnit.SECONDS));
+      final Target target = targetsCollector.chooseTarget().get(10, TimeUnit.SECONDS);
+      System.out.printf("%s(%d) %s host=%s, tags=%s\n", target.getModule(), target.getInstanceCount(), target.getServiceType(), target.getHost(), target.getTags());
     }
   }
 }
