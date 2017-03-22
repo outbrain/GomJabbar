@@ -5,6 +5,7 @@ import com.outbrain.ob1k.consul.HealthInfoInstance;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -43,10 +44,12 @@ public class DefaultTargetsFilter implements TargetFilters {
 
   @Override
   public Predicate<HealthInfoInstance> instanceFilter() {
-    return instance ->
-      Collections.disjoint(instance.Service.Tags, excludeTags)
-        && (includeTags.isEmpty() || !Collections.disjoint(instance.Service.Tags, includeTags))
+    return instance -> {
+      final Set<String> serviceTags = Optional.ofNullable(instance.Service.Tags).orElseGet(Collections::emptySet);
+      return Collections.disjoint(serviceTags, excludeTags)
+        && (includeTags.isEmpty() || !Collections.disjoint(serviceTags, includeTags))
         && instance.Checks.stream().allMatch(check -> "passing".equals(check.Status));
+    };
   }
 
   private boolean isIncludedAndNotExcluded(final String e, final Collection<String> includes, final Collection<String> excludes) {
