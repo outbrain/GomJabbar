@@ -68,9 +68,8 @@ public class ConsulTargetsCache {
   private Map<String, Map<String, List<HealthInfoInstance>>> transformInstanceFuturesMap(final Map<String, ComposableFuture<Map<String, List<HealthInfoInstance>>>> dc2serviceInstancesFutures) {
     return dc2serviceInstancesFutures.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
       try {
-        e.getValue().consume(result -> {if(result.isFailure()) result.getError().printStackTrace();});
         return e.getValue().recover(t -> {
-          log.error("QQQQQQQQQQQQQQQQQ", t);
+          log.error("Failed to load targets for DC=" + e.getKey(), t);
           return new HashMap<>();
         }).get();
       } catch (InterruptedException | ExecutionException ex) {
@@ -105,6 +104,7 @@ public class ConsulTargetsCache {
     return instances.stream().filter(targetFilters.instanceFilter()).collect(Collectors.toList());
   }
 
+  // debug...
   private void print() {
     cache.entrySet().forEach(dc2services -> {
       System.out.println(dc2services.getKey());
