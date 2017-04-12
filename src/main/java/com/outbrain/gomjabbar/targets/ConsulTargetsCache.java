@@ -7,6 +7,7 @@ import com.outbrain.ob1k.consul.ConsulAPI;
 import com.outbrain.ob1k.consul.ConsulCatalog;
 import com.outbrain.ob1k.consul.ConsulHealth;
 import com.outbrain.ob1k.consul.HealthInfoInstance;
+import com.outbrain.ob1k.consul.TagsUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -20,13 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * @author Eran Harel
  */
-public class ConsulTargetsCache {
+public class ConsulTargetsCache implements TargetsCollector {
 
   private static final Logger log = LoggerFactory.getLogger(ConsulTargetsCache.class);
 
@@ -37,14 +39,55 @@ public class ConsulTargetsCache {
   private final TargetFilters targetFilters;
 
   private volatile Map<String, Map<String, List<HealthInfoInstance>>> cache = null;
+  private volatile ComposableFuture<?> reloadFuture;
 
   ConsulTargetsCache(final ConsulHealth health, final ConsulCatalog catalog, final TargetFilters targetFilters) {
     this.catalog = catalog;
     this.health = Objects.requireNonNull(health, "health must not be null");
     this.targetFilters = Objects.requireNonNull(targetFilters, "targetFilters must not be null");
+
+    reload();
   }
 
-  ComposableFuture<?> reload() {
+  @Override
+  public ComposableFuture<Target> chooseTarget() {
+    return chooseDC().flatMap(dc -> chooseModule(dc).flatMap(module -> chooseTarget(dc, module)));
+  }
+
+  private ComposableFuture<String> chooseDC() {
+    return reloadFuture.map(__ -> randomElement(cache.keySet()));
+  }
+
+  private ComposableFuture<String> chooseModule(final String dc) {
+    return reloadFuture.map(__ -> randomElement(cache.get(dc).keySet()));
+  }
+
+  private ComposableFuture<Target> chooseTarget(final String dc, final String module) {
+    return reloadFuture.map(__ -> cache.get(dc).get(module))
+      .map(instances -> {
+        final HealthInfoInstance i = randomElement(instances);
+        return new Target(i.Node.Node, i.Service.Service, extractServicetype(i), instances.size(), i.Service.Tags);
+      });
+  }
+
+  private String extractServicetype(final HealthInfoInstance instance) {
+    final String servicetype = TagsUtil.extractTag(instance.Service.Tags, "servicetype");
+    return servicetype == null ? UNDEFINED : servicetype;
+  }
+
+
+  private <T> T randomElement(final Collection<T> collection) {
+    return collection.stream()
+      .skip(ThreadLocalRandom.current().nextInt(collection.size()))
+      .findFirst()
+      .orElseThrow(() -> new RuntimeException("Unexpected missing elemenet o_0"));
+  }
+
+  public void reload() {
+    reloadFuture = reloadAsync();
+  }
+
+  private ComposableFuture<?> reloadAsync() {
     final ComposableFuture<Map<String, Map<String, List<HealthInfoInstance>>>> cacheFuture = catalog.datacenters()
       .map(this::fetchDcServiceMappingAsync)
       .flatMap(dc2serviceInstancesFutures -> ComposableFutures.all(dc2serviceInstancesFutures.values())
@@ -106,13 +149,13 @@ public class ConsulTargetsCache {
 
   // debug...
   private void print() {
-    cache.entrySet().forEach(dc2services -> {
+    reloadFuture.consume(__ -> cache.entrySet().forEach(dc2services -> {
       System.out.println(dc2services.getKey());
       dc2services.getValue().entrySet().forEach(service2instances -> {
         System.out.println("\t" + service2instances.getKey());
         service2instances.getValue().forEach(i -> System.out.println("\t\t" + i.Service.Tags));
       });
-    });
+    }));
   }
 
   public static void main(final String[] args) throws IOException, ExecutionException, InterruptedException {
@@ -120,8 +163,12 @@ public class ConsulTargetsCache {
     final TargetFilters targetFilters = ConfigParser.parseConfiguration(configFileUrl);
 
     final ConsulTargetsCache consulTargetsCache = new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
-    consulTargetsCache.reload().get();
 
     consulTargetsCache.print();
+
+    for (int i = 0; i < 100; i++) {
+      System.out.println(consulTargetsCache.chooseTarget().get());
+    }
   }
+
 }
