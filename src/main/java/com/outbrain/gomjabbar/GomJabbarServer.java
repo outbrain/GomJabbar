@@ -3,7 +3,7 @@ package com.outbrain.gomjabbar;
 import com.outbrain.gomjabbar.audit.AuditLog;
 import com.outbrain.gomjabbar.config.ConfigParser;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
-import com.outbrain.gomjabbar.targets.ConsulBasedTargetsCollector;
+import com.outbrain.gomjabbar.targets.ConsulTargetsCache;
 import com.outbrain.gomjabbar.targets.TargetFilters;
 import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.consul.ConsulAPI;
@@ -59,7 +59,8 @@ public class GomJabbarServer {
     // TODO this should be passed as a system property
     final URL configFileUrl = ConfigParser.class.getClassLoader().getResource("config.yaml");
     final TargetFilters targetFilters = ConfigParser.parseConfiguration(configFileUrl);
-    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
+    return new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
+//    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
   }
 
 }

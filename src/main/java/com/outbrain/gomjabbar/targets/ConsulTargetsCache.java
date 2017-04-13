@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,21 +39,21 @@ public class ConsulTargetsCache implements TargetsCollector {
   private final ConsulHealth health;
   private final ConsulCatalog catalog;
   private final TargetFilters targetFilters;
+  private final Reloader reloader = new Reloader();
 
   private volatile Map<String, Map<String, List<HealthInfoInstance>>> cache = null;
-  private volatile ComposableFuture<?> reloadFuture;
 
-  ConsulTargetsCache(final ConsulHealth health, final ConsulCatalog catalog, final TargetFilters targetFilters) {
+  public ConsulTargetsCache(final ConsulHealth health, final ConsulCatalog catalog, final TargetFilters targetFilters) {
     this.catalog = catalog;
     this.health = Objects.requireNonNull(health, "health must not be null");
     this.targetFilters = Objects.requireNonNull(targetFilters, "targetFilters must not be null");
 
-    reload();
+    reloader.start();
   }
 
   @Override
   public ComposableFuture<Target> chooseTarget() {
-    return reloadFuture.map(__ ->  {
+    return reloader.reloadFuture.map(__ ->  {
       final String dc = chooseDC();
       final String module = chooseModule(dc);
 
@@ -85,10 +87,6 @@ public class ConsulTargetsCache implements TargetsCollector {
       .skip(ThreadLocalRandom.current().nextInt(collection.size()))
       .findFirst()
       .orElseThrow(() -> new RuntimeException("Unexpected missing elemenet o_0"));
-  }
-
-  public void reload() {
-    reloadFuture = reloadAsync();
   }
 
   private ComposableFuture<?> reloadAsync() {
@@ -153,7 +151,7 @@ public class ConsulTargetsCache implements TargetsCollector {
 
   // debug...
   private void print() {
-    reloadFuture.consume(__ -> cache.entrySet().forEach(dc2services -> {
+    reloader.reloadFuture.consume(__ -> cache.entrySet().forEach(dc2services -> {
       System.out.println(dc2services.getKey());
       dc2services.getValue().entrySet().forEach(service2instances -> {
         System.out.println("\t" + service2instances.getKey());
@@ -175,4 +173,33 @@ public class ConsulTargetsCache implements TargetsCollector {
     }
   }
 
+  private class Reloader {
+
+    private static final int RELOAD_DELAY_MINUTES = 5;
+    private final AtomicBoolean isReloading = new AtomicBoolean(false);
+
+    private volatile ComposableFuture<?> reloadFuture;
+
+    private void start() {
+      reload();
+    }
+
+    private boolean reload() {
+      if (isReloading.compareAndSet(false, true)) {
+        log.info("Reloading cache...");
+        reloadFuture = reloadAsync();
+        reloadFuture.consume(result -> {
+          if(isReloading.compareAndSet(true, false)) {
+            log.info("Scheduling the next cache reload in {} minutes", RELOAD_DELAY_MINUTES);
+            ComposableFutures.schedule(this::reload, RELOAD_DELAY_MINUTES, TimeUnit.MINUTES);
+          }
+        });
+
+        return true;
+      }
+
+      log.debug("Cache reloading is already in progress... skipping...");
+      return false;
+    }
+  }
 }
