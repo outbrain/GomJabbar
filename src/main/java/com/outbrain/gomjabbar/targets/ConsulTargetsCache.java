@@ -166,10 +166,11 @@ public class ConsulTargetsCache implements TargetsCollector {
 
     final ConsulTargetsCache consulTargetsCache = new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
-    consulTargetsCache.print();
+//    consulTargetsCache.print();
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 1000; i++) {
       System.out.println(consulTargetsCache.chooseTarget().get());
+      Thread.sleep(2000);
     }
   }
 
@@ -187,8 +188,13 @@ public class ConsulTargetsCache implements TargetsCollector {
     private boolean reload() {
       if (isReloading.compareAndSet(false, true)) {
         log.info("Reloading cache...");
-        reloadFuture = reloadAsync();
-        reloadFuture.consume(result -> {
+        final ComposableFuture<?> nextReloadFuture = reloadAsync();
+        if(null == reloadFuture) {
+          reloadFuture = nextReloadFuture;
+        }
+
+        nextReloadFuture.consume(result -> {
+          reloadFuture = nextReloadFuture;
           if(isReloading.compareAndSet(true, false)) {
             log.info("Scheduling the next cache reload in {} minutes", RELOAD_DELAY_MINUTES);
             ComposableFutures.schedule(this::reload, RELOAD_DELAY_MINUTES, TimeUnit.MINUTES);
