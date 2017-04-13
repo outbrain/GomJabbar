@@ -51,23 +51,27 @@ public class ConsulTargetsCache implements TargetsCollector {
 
   @Override
   public ComposableFuture<Target> chooseTarget() {
-    return chooseDC().flatMap(dc -> chooseModule(dc).flatMap(module -> chooseTarget(dc, module)));
+    return reloadFuture.map(__ ->  {
+      final String dc = chooseDC();
+      final String module = chooseModule(dc);
+
+      return chooseTarget(dc, module);
+    });
   }
 
-  private ComposableFuture<String> chooseDC() {
-    return reloadFuture.map(__ -> randomElement(cache.keySet()));
+  private String chooseDC() {
+    return randomElement(cache.keySet());
   }
 
-  private ComposableFuture<String> chooseModule(final String dc) {
-    return reloadFuture.map(__ -> randomElement(cache.get(dc).keySet()));
+  private String chooseModule(final String dc) {
+    return randomElement(cache.get(dc).keySet());
   }
 
-  private ComposableFuture<Target> chooseTarget(final String dc, final String module) {
-    return reloadFuture.map(__ -> cache.get(dc).get(module))
-      .map(instances -> {
-        final HealthInfoInstance i = randomElement(instances);
-        return new Target(i.Node.Node, i.Service.Service, extractServicetype(i), instances.size(), i.Service.Tags);
-      });
+  private Target chooseTarget(final String dc, final String module) {
+    final List<HealthInfoInstance> instances = cache.get(dc).get(module);
+    final HealthInfoInstance randomInstance = randomElement(instances);
+
+    return new Target(randomInstance.Node.Node, randomInstance.Service.Service, extractServicetype(randomInstance), instances.size(), randomInstance.Service.Tags);
   }
 
   private String extractServicetype(final HealthInfoInstance instance) {
