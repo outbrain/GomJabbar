@@ -9,6 +9,7 @@ import com.outbrain.ob1k.consul.ConsulHealth;
 import com.outbrain.ob1k.consul.HealthInfoInstance;
 import com.outbrain.ob1k.consul.TagsUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +112,7 @@ public class ConsulTargetsCache implements TargetsCollector {
   }
 
   private Map<String, Map<String, List<HealthInfoInstance>>> transformInstanceFuturesMap(final Map<String, ComposableFuture<Map<String, List<HealthInfoInstance>>>> dc2serviceInstancesFutures) {
-    return dc2serviceInstancesFutures.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
+    final Map<String, Map<String, List<HealthInfoInstance>>> dc2serviceInstances = dc2serviceInstancesFutures.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
       try {
         return e.getValue().recover(t -> {
           log.error("Failed to load targets for DC=" + e.getKey(), t);
@@ -121,6 +122,9 @@ public class ConsulTargetsCache implements TargetsCollector {
         throw new RuntimeException("shouldn't happen as we're in the future map callback handler", ex);
       }
     }));
+
+    dc2serviceInstances.entrySet().removeIf(e -> MapUtils.isEmpty(e.getValue()));
+    return  dc2serviceInstances;
   }
 
   private ComposableFuture<Map<String, List<HealthInfoInstance>>> service2instances(final String dc) {
