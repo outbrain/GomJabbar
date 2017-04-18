@@ -8,6 +8,7 @@ import com.outbrain.gomjabbar.faults.FaultInjector;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
 import com.outbrain.gomjabbar.faults.RundeckCommandExecutor;
 import com.outbrain.gomjabbar.targets.ConsulBasedTargetsCollector;
+import com.outbrain.gomjabbar.targets.ConsulTargetsCache;
 import com.outbrain.gomjabbar.targets.Target;
 import com.outbrain.gomjabbar.targets.TargetFilters;
 import com.outbrain.gomjabbar.targets.TargetsCollector;
@@ -63,7 +64,7 @@ public class GomJaabbar {
     final AuditLog auditLog = new AuditLog();
 
     final TargetFilters targetFilters = ConfigParser.parseConfiguration(ConfigParser.class.getClassLoader().getResource("config.yaml"));
-    final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
+    final TargetsCollector targetsCollector = new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     try (Scanner in = new Scanner(System.in)) {
       while(!Thread.currentThread().isInterrupted()) {
