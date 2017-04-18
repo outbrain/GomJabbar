@@ -1,21 +1,30 @@
 package com.outbrain.gomjabbar.faults;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
 /**
  * @author Eran Harel
  */
 public class RundeckCommand {
 
   private final String project = "ops";
-  private final String host;
+  private final Collection<String> hosts;
   private final String exec;
 
   // I need to make some marshalers happy ;)
   RundeckCommand() {
-    this(null, null);
+    this((String) null, null);
   }
 
   public RundeckCommand(final String host, final String command) {
-    this.host = host;
+    this(Collections.singleton(host), command);
+  }
+
+  public RundeckCommand(final Collection<String> hosts, final String command) {
+    this.hosts = new ArrayList<>(hosts);
     this.exec = command;
   }
 
@@ -24,7 +33,7 @@ public class RundeckCommand {
   }
 
   public String getFilter() {
-    return "hostname: " + host;
+    return "hostname: " + hosts.stream().collect(Collectors.joining(","));
   }
 
   public String getProject() {
