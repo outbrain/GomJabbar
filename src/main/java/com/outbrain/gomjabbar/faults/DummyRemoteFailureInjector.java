@@ -7,6 +7,7 @@ import com.outbrain.ob1k.concurrent.ComposableFutures;
 import java.util.Objects;
 
 /**
+ * A dummy failure used for testing, simulations, and debugging - executes a harmless command on rundeck
  * @author Eran Harel
  */
 public class DummyRemoteFailureInjector implements FaultInjector {

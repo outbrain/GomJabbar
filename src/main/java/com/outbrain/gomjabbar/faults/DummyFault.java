@@ -5,6 +5,7 @@ import com.outbrain.ob1k.concurrent.ComposableFuture;
 import com.outbrain.ob1k.concurrent.ComposableFutures;
 
 /**
+ * A dummy failure used for testing, simulations, and debugging
  * @author Eran Harel
  */
 public class DummyFault implements FaultInjector {

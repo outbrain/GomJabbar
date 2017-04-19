@@ -6,6 +6,7 @@ import com.outbrain.ob1k.concurrent.ComposableFuture;
 import java.util.Objects;
 
 /**
+ * Kills services ungracefully (kill -9)
  * @author Eran Harel
  */
 public class SIGKILLer implements FaultInjector {

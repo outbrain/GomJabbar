@@ -6,6 +6,7 @@ import com.outbrain.ob1k.concurrent.ComposableFuture;
 import java.util.Objects;
 
 /**
+ * Kills services gracefully using init.d service stop
  * @author Eran Harel
  */
 public class InitdStopper implements FaultInjector {
