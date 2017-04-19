@@ -32,7 +32,8 @@ public class FaultInjectors {
     final FaultInjector dummyLocalFault = new DummyFault();
     final FaultInjector gracefulShutdownInjector = new InitdStopper(rundeckCommandExecutor);
     final FaultInjector gracelessShutdownInjector = new SIGKILLer(rundeckCommandExecutor);
-    return new FaultInjectors(Lists.newArrayList(dummyRemoteFailureInjector, dummyLocalFault, gracefulShutdownInjector, gracelessShutdownInjector));
+    final TraficController traficControllerInjector = new TraficController(rundeckCommandExecutor, 10, 300 ) ;
+    return new FaultInjectors(Lists.newArrayList(dummyRemoteFailureInjector, dummyLocalFault, gracefulShutdownInjector, gracelessShutdownInjector, traficControllerInjector));
   }
 
   public FaultInjector selectFaultInjector() {
