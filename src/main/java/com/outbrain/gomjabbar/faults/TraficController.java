@@ -11,8 +11,8 @@ import java.util.Objects;
  */
 public class TraficController implements FaultInjector {
 
-  private static final String TC_CMD = "sudo tc qdisc show | grep -v \"netem\" && DEV=`sudo route | grep default | awk '{print $NF}'`; sudo tc qdisc add dev $DEV handle 10: root htb default 1; sudo tc class add dev $DEV parent 10: classid 10:1 htb rate 1000000kbit; sudo tc class add dev $DEV parent 10: classid 10:10 htb rate 1000000kbit; sudo tc qdisc add dev $DEV parent 10:10 handle 100: netem delay %dms loss %d.00%%; sudo tc -s qdisc";
-  private static final String TC_REVERT_CMD = "sudo tc qdisc del dev `route | grep default | awk '{print $NF}'` handle 10: root; sudo tc -s qdisc";
+  private static final String TC_CMD = "DEV=`sudo route | grep default | awk \"'{print $NF}'\"`; sudo tc qdisc add dev $DEV root netem delay %dms loss %d.00%%; sudo tc -s qdisc";
+  private static final String TC_REVERT_CMD = "sudo tc qdisc del dev `route | grep default | awk \"'{print $NF}'`\" root; sudo rmmod sch_netem; sudo tc -s qdisc";
 
   private final RundeckCommandExecutor commandExecutor;
   private final int packetLossPercent;
