@@ -8,7 +8,7 @@ import java.util.Optional;
  * Introduces high latency, packet loss, and decreased BW
  * @author Eran Harel
  */
-public class TraficController extends AbstractCommandFaultInjector {
+public class TraficController extends AbstractFaultCommandInjector {
 
   private static final String TC_CMD = "DEV=`sudo route | grep default | awk \"'{print $NF}'\"`; sudo tc qdisc add dev $DEV root netem delay %dms loss %d.00%%; sudo tc -s qdisc";
   private static final String TC_REVERT_CMD = "sudo tc qdisc del dev `route | grep default | awk \"'{print $NF}'`\" root; sudo rmmod sch_netem; sudo tc -s qdisc";

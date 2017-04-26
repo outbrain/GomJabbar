@@ -33,6 +33,7 @@ public class FaultInjectors {
     final FaultInjector gracefulShutdownInjector = new InitdStopper(rundeckCommandExecutor);
     final FaultInjector gracelessShutdownInjector = new SIGKILLer(rundeckCommandExecutor);
     final TraficController traficControllerInjector = new TraficController(rundeckCommandExecutor, 10, 300 ) ;
+//    final FaultInjector echo = new FaultScriptInjector(rundeckCommandExecutor, "echo", "echo stuff", "https://gist.githubusercontent.com/eranharel/077730def256486e5e19e2205ef8b695/raw/023145fde84b330818e611b9b4ad1de22a444675/echoargs.sh", "arg1 arg2", null, null);
     return new FaultInjectors(Lists.newArrayList(dummyRemoteFailureInjector, dummyLocalFault, gracefulShutdownInjector, gracelessShutdownInjector, traficControllerInjector));
   }
 

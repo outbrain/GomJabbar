@@ -10,11 +10,11 @@ import java.util.Optional;
 /**
  * @author Eran Harel
  */
-public abstract class AbstractCommandFaultInjector implements FaultInjector {
+public abstract class AbstractFaultCommandInjector implements FaultInjector {
 
   private final RundeckCommandExecutor commandExecutor;
 
-  public AbstractCommandFaultInjector(final RundeckCommandExecutor commandExecutor) {
+  public AbstractFaultCommandInjector(final RundeckCommandExecutor commandExecutor) {
     this.commandExecutor = Objects.requireNonNull(commandExecutor, "commandExecutor must not be null");
   }
 

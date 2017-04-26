@@ -8,7 +8,7 @@ import java.util.Optional;
  * Kills services ungracefully (kill -9)
  * @author Eran Harel
  */
-public class SIGKILLer extends AbstractCommandFaultInjector {
+public class SIGKILLer extends AbstractFaultCommandInjector {
 
   public SIGKILLer(final RundeckCommandExecutor commandExecutor) {
     super(commandExecutor);

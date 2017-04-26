@@ -8,7 +8,7 @@ import java.util.Optional;
  * A dummy failure used for testing, simulations, and debugging - executes a harmless command on rundeck
  * @author Eran Harel
  */
-public class DummyRemoteFailureInjector extends AbstractCommandFaultInjector {
+public class DummyRemoteFailureInjector extends AbstractFaultCommandInjector {
 
   public DummyRemoteFailureInjector(final RundeckCommandExecutor commandExecutor) {
     super(commandExecutor);

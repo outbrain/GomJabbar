@@ -8,7 +8,7 @@ import java.util.Optional;
  * Kills services gracefully using init.d service stop
  * @author Eran Harel
  */
-public class InitdStopper extends AbstractCommandFaultInjector {
+public class InitdStopper extends AbstractFaultCommandInjector {
 
   public InitdStopper(final RundeckCommandExecutor commandExecutor) {
     super(commandExecutor);
