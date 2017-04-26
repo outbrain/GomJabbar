@@ -28,13 +28,15 @@ public abstract class AbstractCommandFaultInjector implements FaultInjector {
 
   @Override
   public ComposableFuture<String> injectFailure(final Target target) {
-    final RundeckCommand command = new RundeckCommand(target.getHost(), formatCommand(target));
+    final RundeckCommand command = RundeckCommand.Builder.forTarget(target.getHost()).buildCommand(formatCommand(target));
     return commandExecutor.executeCommandAsync(command);
   }
 
   @Override
   public ComposableFuture<String> revertFailure(final Target target) {
-    return formatRevertCommand(target).map(cmd -> commandExecutor.executeCommandAsync(new RundeckCommand(target.getHost(), cmd)))
-      .orElse(ComposableFutures.fromValue("No revert command was given"));
+    return formatRevertCommand(target).map(cmd -> {
+      final RundeckCommand command = RundeckCommand.Builder.forTarget(target.getHost()).buildCommand(cmd);
+      return commandExecutor.executeCommandAsync(command);
+    }).orElse(ComposableFutures.fromValue("No revert command was given"));
   }
 }

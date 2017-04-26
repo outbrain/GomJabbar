@@ -33,7 +33,15 @@ public class RundeckCommandExecutor {
   }
 
   public ComposableFuture<String> executeCommandAsync(final RundeckCommand command) {
-    final RequestBuilder postBuilder = httpClient.post(String.format("%s/14/project/ops/run/command?authtoken=%s", rundeckBaseUrl, authToken));
+    return executeRemoteAsync(command, "command");
+  }
+
+  public ComposableFuture<String> executeScriptByUrlAsync(final RundeckCommand command) {
+    return executeRemoteAsync(command, "url");
+  }
+
+  private ComposableFuture<String> executeRemoteAsync(final RundeckCommand command, final String type) {
+    final RequestBuilder postBuilder = httpClient.post(String.format("%s/14/project/ops/run/%s?authtoken=%s", rundeckBaseUrl, type, authToken));
     return postBuilder.setContentType(ContentType.JSON)
       .addHeader("Accept", ContentType.JSON.responseEncoding())
       .setBody(command)
@@ -42,14 +50,6 @@ public class RundeckCommandExecutor {
           System.out.println("Failure was triggered successfully: " + response);
           return monitorExecution(response.getExecution().getId());
         });
-  }
-
-  public void executeCommand(final RundeckCommand command) {
-    try {
-      executeCommandAsync(command).get(1, TimeUnit.MINUTES);
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      e.printStackTrace();
-    }
   }
 
   private ComposableFuture<String> monitorExecution(final long id) {
