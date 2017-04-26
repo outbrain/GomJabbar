@@ -39,6 +39,7 @@ filters:
     - AdsCreation
     - Neo
     - Eve
+    - AmplifyScripts
 
   tags:
     include:
