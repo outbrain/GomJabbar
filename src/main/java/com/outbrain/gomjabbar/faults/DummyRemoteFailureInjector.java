@@ -1,26 +1,17 @@
 package com.outbrain.gomjabbar.faults;
 
 import com.outbrain.gomjabbar.targets.Target;
-import com.outbrain.ob1k.concurrent.ComposableFuture;
-import com.outbrain.ob1k.concurrent.ComposableFutures;
 
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A dummy failure used for testing, simulations, and debugging - executes a harmless command on rundeck
  * @author Eran Harel
  */
-public class DummyRemoteFailureInjector implements FaultInjector {
-
-  private final RundeckCommandExecutor commandExecutor;
+public class DummyRemoteFailureInjector extends AbstractCommandFaultInjector {
 
   public DummyRemoteFailureInjector(final RundeckCommandExecutor commandExecutor) {
-    this.commandExecutor = Objects.requireNonNull(commandExecutor, "commandExecutor must not be null");
-  }
-
-  @Override
-  public String id() {
-    return getClass().getName();
+    super(commandExecutor);
   }
 
   @Override
@@ -29,13 +20,12 @@ public class DummyRemoteFailureInjector implements FaultInjector {
   }
 
   @Override
-  public ComposableFuture<String> injectFailure(final Target target) {
-    final RundeckCommand command = new RundeckCommand(target.getHost(), "for i in `seq 1 5`; do echo $i; sleep 1; done\n");
-    return commandExecutor.executeCommandAsync(command);
+  protected String formatCommand(final Target target) {
+    return "for i in `seq 1 5`; do echo $i; sleep 1; done\n";
   }
 
   @Override
-  public ComposableFuture<String> revertFailure(final Target target) {
-    return ComposableFutures.fromValue("Dummy reverted target " + target);
+  protected Optional<String> formatRevertCommand(final Target target) {
+    return Optional.empty();
   }
 }

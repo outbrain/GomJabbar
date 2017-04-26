@@ -1,25 +1,17 @@
 package com.outbrain.gomjabbar.faults;
 
 import com.outbrain.gomjabbar.targets.Target;
-import com.outbrain.ob1k.concurrent.ComposableFuture;
 
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Kills services ungracefully (kill -9)
  * @author Eran Harel
  */
-public class SIGKILLer implements FaultInjector {
-
-  private final RundeckCommandExecutor commandExecutor;
+public class SIGKILLer extends AbstractCommandFaultInjector {
 
   public SIGKILLer(final RundeckCommandExecutor commandExecutor) {
-    this.commandExecutor = Objects.requireNonNull(commandExecutor, "commandExecutor must not be null");
-  }
-
-  @Override
-  public String id() {
-    return getClass().getName();
+    super(commandExecutor);
   }
 
   @Override
@@ -28,14 +20,13 @@ public class SIGKILLer implements FaultInjector {
   }
 
   @Override
-  public ComposableFuture<String> injectFailure(final Target target) {
-    final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo pkill -9 -f %s", target.getModule()));
-    return commandExecutor.executeCommandAsync(command);
+  protected String formatCommand(final Target target) {
+    return String.format("sudo pkill -9 -f %s", target.getModule());
   }
 
   @Override
-  public ComposableFuture<String> revertFailure(final Target target) {
-    final RundeckCommand command = new RundeckCommand(target.getHost(), String.format("sudo service %s start", target.getModule()));
-    return commandExecutor.executeCommandAsync(command);
+  protected Optional<String> formatRevertCommand(final Target target) {
+    return Optional.of(String.format("sudo service %s start", target.getModule()));
   }
+
 }
