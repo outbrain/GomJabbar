@@ -40,6 +40,7 @@
     <java.compiler.source>1.8</java.compiler.source>
     <java.compiler.target>1.8</java.compiler.target>
 
+    <ob1k.version>0.198</ob1k.version>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
     <findbugs.skip>false</findbugs.skip>
   </properties>
@@ -128,12 +129,12 @@
     <dependency>
       <groupId>com.outbrain.swinfra</groupId>
       <artifactId>ob1k-consul</artifactId>
-      <version>0.192</version>
+      <version>${ob1k.version}</version>
     </dependency>
     <dependency>
       <groupId>com.outbrain.swinfra</groupId>
       <artifactId>ob1k-cache</artifactId>
-      <version>0.192</version>
+      <version>${ob1k.version}</version>
     </dependency>
 
     <dependency>
