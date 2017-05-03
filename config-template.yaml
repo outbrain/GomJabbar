@@ -1,0 +1,21 @@
+filters:
+  clusters:
+    include:
+    # a list of clusters to be included in the targets
+    # if empty, all non excluded clusters are included
+    exclude:
+    # a list of clusters to be excluded from the targets (can be empty)
+
+  modules:
+    include:
+    # a list of modules to be included in the targets
+    # if empty, all non excluded modules are included
+    exclude:
+    # a list of modules to be excluded from the targets (can be empty)
+
+  tags:
+    include:
+    # a list of tags targets must have to be included in the targets
+    # if empty, only excluded tags are considered
+    exclude:
+    # a list of tags used for excluding targets containing these tags (can be empty)

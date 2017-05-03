@@ -7,7 +7,6 @@ import com.outbrain.gomjabbar.faults.Fault;
 import com.outbrain.gomjabbar.faults.FaultInjector;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
 import com.outbrain.gomjabbar.faults.RundeckCommandExecutor;
-import com.outbrain.gomjabbar.targets.ConsulBasedTargetsCollector;
 import com.outbrain.gomjabbar.targets.ConsulTargetsCache;
 import com.outbrain.gomjabbar.targets.Target;
 import com.outbrain.gomjabbar.targets.TargetFilters;
@@ -21,6 +20,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -63,7 +63,7 @@ public class GomJaabbar {
   private static void selectAndInjectFailures(final FaultInjectors faultInjectors) throws InterruptedException, ExecutionException, TimeoutException, IOException {
     final AuditLog auditLog = new AuditLog();
 
-    final TargetFilters targetFilters = ConfigParser.parseConfiguration(ConfigParser.class.getClassLoader().getResource("config.yaml"));
+    final TargetFilters targetFilters = ConfigParser.parseConfiguration(new URL("file:./config-template.yaml"));
     final TargetsCollector targetsCollector = new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     try (Scanner in = new Scanner(System.in)) {

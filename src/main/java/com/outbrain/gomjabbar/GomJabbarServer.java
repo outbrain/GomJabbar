@@ -12,6 +12,7 @@ import com.outbrain.ob1k.server.builder.ServerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -56,11 +57,20 @@ public class GomJabbarServer {
   }
 
   private TargetsCollector creteTargetsCollector() {
-    // TODO this should be passed as a system property
-    final URL configFileUrl = ConfigParser.class.getClassLoader().getResource("config.yaml");
+    final URL configFileUrl = resolveConfigFileUrl();
+
     final TargetFilters targetFilters = ConfigParser.parseConfiguration(configFileUrl);
     return new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 //    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
+  }
+
+  private URL resolveConfigFileUrl() {
+    final String configFileUrl = System.getProperty("com.outbrain.gomjabbar.configFileUrl");
+    try {
+      return new URL(configFileUrl);
+    } catch (MalformedURLException e) {
+      throw new IllegalArgumentException("Failed to parse config file url: " + configFileUrl, e);
+    }
   }
 
 }

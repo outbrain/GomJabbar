@@ -11,6 +11,8 @@ import com.outbrain.ob1k.consul.TagsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -91,10 +93,10 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
     return fail(step);
   }
 
-  public static void main(final String[] args) throws ExecutionException, InterruptedException, TimeoutException {
+  public static void main(final String[] args) throws ExecutionException, InterruptedException, TimeoutException, MalformedURLException {
     // run with -Dcom.outbrain.ob1k.consul.agent.address=my.consul.host:8500
 
-    final TargetFilters targetFilters = ConfigParser.parseConfiguration(ConfigParser.class.getClassLoader().getResource("config.yaml"));
+    final TargetFilters targetFilters = ConfigParser.parseConfiguration(new URL("file:./config-template.yaml"));
     final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     for (int i = 0; i < 100; i++) {
