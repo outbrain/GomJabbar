@@ -96,7 +96,7 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
   public static void main(final String[] args) throws ExecutionException, InterruptedException, TimeoutException, MalformedURLException {
     // run with -Dcom.outbrain.ob1k.consul.agent.address=my.consul.host:8500
 
-    final TargetFilters targetFilters = ConfigParser.parseConfiguration(new URL("file:./config-template.yaml"));
+    final TargetFilters targetFilters = ConfigParser.parseConfiguration(new URL("file:./config-template.yaml")).targetFilters;
     final TargetsCollector targetsCollector = new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     for (int i = 0; i < 100; i++) {

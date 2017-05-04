@@ -12,43 +12,33 @@ import java.util.Objects;
 public class FaultScriptInjector implements FaultInjector {
 
   private final RundeckCommandExecutor commandExecutor;
-  private final String id;
-  private final String description;
-  private final String scriptUrl;
-  private final String scriptArgs;
-  private final String revertScriptUrl;
-  private final String revertScriptArgs;
+  private final FaultScript faultScript;
 
-  public FaultScriptInjector(final RundeckCommandExecutor commandExecutor, final String id, final String description, final String scriptUrl, final String scriptArgs, final String revertScriptUrl, final String revertScriptArgs) {
+  public FaultScriptInjector(final RundeckCommandExecutor commandExecutor, final FaultScript faultScript) {
     this.commandExecutor = Objects.requireNonNull(commandExecutor, "commandExecutor must not be null");
-    this.id = id;
-    this.description = description;
-    this.scriptUrl = scriptUrl;
-    this.scriptArgs = scriptArgs;
-    this.revertScriptUrl = revertScriptUrl;
-    this.revertScriptArgs = revertScriptArgs;
+    this.faultScript = Objects.requireNonNull(faultScript, "faultScript must not be null");
   }
 
   @Override
   public String id() {
-    return id;
+    return faultScript.id;
   }
 
   @Override
   public String description() {
-    return description;
+    return faultScript.description;
   }
 
   @Override
   public ComposableFuture<String> injectFailure(final Target target) {
-    return execute(target, scriptUrl, scriptArgs);
+    return execute(target, faultScript.scriptUrl, faultScript.scriptArgs);
   }
 
   @Override
   public ComposableFuture<String> revertFailure(final Target target) {
-    return revertScriptUrl == null ?
+    return faultScript.revertScriptUrl == null ?
       ComposableFutures.fromValue("no revert script was provided") :
-      execute(target, revertScriptUrl, revertScriptArgs);
+      execute(target, faultScript.revertScriptUrl, faultScript.revertScriptArgs);
   }
 
   private ComposableFuture<String> execute(final Target target, final String scriptUrl, final String scriptArgs) {

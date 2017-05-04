@@ -2,6 +2,7 @@ package com.outbrain.gomjabbar;
 
 import com.outbrain.gomjabbar.audit.AuditLog;
 import com.outbrain.gomjabbar.config.ConfigParser;
+import com.outbrain.gomjabbar.config.Configuration;
 import com.outbrain.gomjabbar.faults.DummyRemoteFailureInjector;
 import com.outbrain.gomjabbar.faults.Fault;
 import com.outbrain.gomjabbar.faults.FaultInjector;
@@ -63,7 +64,8 @@ public class GomJaabbar {
   private static void selectAndInjectFailures(final FaultInjectors faultInjectors) throws InterruptedException, ExecutionException, TimeoutException, IOException {
     final AuditLog auditLog = new AuditLog();
 
-    final TargetFilters targetFilters = ConfigParser.parseConfiguration(new URL("file:./config-template.yaml"));
+    final Configuration configuration = ConfigParser.parseConfiguration(new URL("file:./config-template.yaml"));
+    final TargetFilters targetFilters = configuration.targetFilters;
     final TargetsCollector targetsCollector = new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 
     try (Scanner in = new Scanner(System.in)) {

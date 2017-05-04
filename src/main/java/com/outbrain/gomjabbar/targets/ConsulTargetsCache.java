@@ -166,7 +166,7 @@ public class ConsulTargetsCache implements TargetsCollector {
 
   public static void main(final String[] args) throws IOException, ExecutionException, InterruptedException {
     final URL configFileUrl = new URL("file:./config-template.yaml");
-    final TargetFilters targetFilters = ConfigParser.parseConfiguration(configFileUrl);
+    final TargetFilters targetFilters = ConfigParser.parseConfiguration(configFileUrl).targetFilters;
 
     final ConsulTargetsCache consulTargetsCache = new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
 

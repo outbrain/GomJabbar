@@ -2,6 +2,7 @@ package com.outbrain.gomjabbar;
 
 import com.outbrain.gomjabbar.audit.AuditLog;
 import com.outbrain.gomjabbar.config.ConfigParser;
+import com.outbrain.gomjabbar.config.Configuration;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
 import com.outbrain.gomjabbar.targets.ConsulTargetsCache;
 import com.outbrain.gomjabbar.targets.TargetFilters;
@@ -29,9 +30,15 @@ public class GomJabbarServer {
   private static final String SERVICE_PATH = "/api";
 
   private Server server;
+  private final Configuration configuration;
 
   public static void main(final String[] args) {
     new GomJabbarServer().start(PORT);
+  }
+
+  private GomJabbarServer() {
+    final URL configFileUrl = resolveConfigFileUrl();
+    configuration = ConfigParser.parseConfiguration(configFileUrl);
   }
 
   private void start(final int port) {
@@ -51,17 +58,14 @@ public class GomJabbarServer {
     return ServerBuilder.newBuilder()
       .contextPath(CTX_PATH)
       .configure(builder -> builder.usePort(port).requestTimeout(requestTimeout, TimeUnit.SECONDS))
-      .service(builder -> builder.register(new GomJabbarServiceImpl(FaultInjectors.defaultFaultInjectors(), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
+      .service(builder -> builder.register(new GomJabbarServiceImpl(FaultInjectors.defaultFaultInjectors(configuration.scripts), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
       .withExtension(registerMappingService("/endpoints"))
       .build();
   }
 
   private TargetsCollector creteTargetsCollector() {
-    final URL configFileUrl = resolveConfigFileUrl();
-
-    final TargetFilters targetFilters = ConfigParser.parseConfiguration(configFileUrl);
-    return new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
-//    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), targetFilters);
+    return new ConsulTargetsCache(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), configuration.targetFilters);
+//    return new ConsulBasedTargetsCollector(ConsulAPI.getHealth(), ConsulAPI.getCatalog(), configuration.targetFilters);
   }
 
   private URL resolveConfigFileUrl() {

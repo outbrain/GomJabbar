@@ -19,3 +19,13 @@ filters:
     # if empty, only excluded tags are considered
     exclude:
     # a list of tags used for excluding targets containing these tags (can be empty)
+
+#scripts:
+#  My_Fault_Script:
+#    description: "Fails stuff"
+#    fail:
+#      URL: "http://my.script.com/script.sh"
+#      args: "-f foo -b bar"
+#    revert:
+#      URL: "http://my.script.com/script.sh"
+#      args: "-revert"

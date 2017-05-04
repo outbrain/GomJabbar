@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -22,19 +23,22 @@ public class FaultInjectors {
   }
 
   // TODO externalize
-  public static FaultInjectors defaultFaultInjectors() {
+  public static FaultInjectors defaultFaultInjectors(Collection<FaultScript> scripts) {
     final String authToken = System.getProperty("com.outbrain.gomjabbar.rundeckAuthToken");
     final String runDeckHost = System.getProperty("com.outbrain.gomjabbar.rundeckHost");
-
-    // OK, this should load it from somewhere later...
     final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
-    final FaultInjector dummyRemoteFailureInjector = new DummyRemoteFailureInjector(rundeckCommandExecutor);
-    final FaultInjector dummyLocalFault = new DummyFault();
-    final FaultInjector gracefulShutdownInjector = new InitdStopper(rundeckCommandExecutor);
-    final FaultInjector gracelessShutdownInjector = new SIGKILLer(rundeckCommandExecutor);
-    final TraficController traficControllerInjector = new TraficController(rundeckCommandExecutor, 10, 300 ) ;
-//    final FaultInjector echo = new FaultScriptInjector(rundeckCommandExecutor, "echo", "echo stuff", "https://gist.githubusercontent.com/eranharel/077730def256486e5e19e2205ef8b695/raw/023145fde84b330818e611b9b4ad1de22a444675/echoargs.sh", "arg1 arg2", null, null);
-    return new FaultInjectors(Lists.newArrayList(dummyRemoteFailureInjector, dummyLocalFault, gracefulShutdownInjector, gracelessShutdownInjector, traficControllerInjector));
+
+    final LinkedList<FaultInjector> faultInjectors = new LinkedList<>();
+    faultInjectors.add(new DummyRemoteFailureInjector(rundeckCommandExecutor));
+    faultInjectors.add(new DummyFault());
+    faultInjectors.add(new InitdStopper(rundeckCommandExecutor));
+    faultInjectors.add(new SIGKILLer(rundeckCommandExecutor));
+
+    if (scripts != null) {
+      scripts.forEach(e -> faultInjectors.add(new FaultScriptInjector(rundeckCommandExecutor, e)));
+    }
+
+    return new FaultInjectors(Lists.newArrayList(faultInjectors));
   }
 
   public FaultInjector selectFaultInjector() {
