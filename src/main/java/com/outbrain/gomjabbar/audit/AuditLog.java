@@ -28,7 +28,7 @@ public class AuditLog {
     } catch (final IOException e) {
       throw new RuntimeException("failed to create audit dir", e);
     }
-    System.out.println("Audit Log willl be written to " + logDir.toAbsolutePath());
+    System.out.println("Audit Log will be written to " + logDir.toAbsolutePath());
   }
 
   public void log(final Fault fault) {

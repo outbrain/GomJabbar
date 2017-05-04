@@ -5,7 +5,6 @@ import com.outbrain.gomjabbar.config.ConfigParser;
 import com.outbrain.gomjabbar.config.Configuration;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
 import com.outbrain.gomjabbar.targets.ConsulTargetsCache;
-import com.outbrain.gomjabbar.targets.TargetFilters;
 import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.consul.ConsulAPI;
 import com.outbrain.ob1k.server.Server;

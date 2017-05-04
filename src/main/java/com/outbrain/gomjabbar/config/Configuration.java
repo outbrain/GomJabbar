@@ -5,7 +5,6 @@ import com.outbrain.gomjabbar.targets.TargetFilters;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author Eran Harel

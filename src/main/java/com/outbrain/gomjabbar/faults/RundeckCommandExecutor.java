@@ -6,9 +6,7 @@ import com.outbrain.ob1k.http.HttpClient;
 import com.outbrain.ob1k.http.RequestBuilder;
 import com.outbrain.ob1k.http.common.ContentType;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 /**

@@ -4,7 +4,6 @@ import com.outbrain.gomjabbar.faults.Fault;
 import com.outbrain.gomjabbar.targets.Target;
 import com.outbrain.ob1k.concurrent.ComposableFuture;
 
-import java.util.Collection;
 import java.util.Map;
 
 /**

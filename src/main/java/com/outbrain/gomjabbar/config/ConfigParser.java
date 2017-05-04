@@ -50,11 +50,11 @@ public class ConfigParser {
   @SuppressWarnings("unchecked")
   private static FaultScript parseScript(final Map.Entry<String, Map<String, ?>> scriptData) {
     final String id = scriptData.getKey();
-    final String decription = (String) scriptData.getValue().get("description");
+    final String description = (String) scriptData.getValue().get("description");
     final Map<String, String> failScript = (Map<String, String>) scriptData.getValue().get("fail");
     final Map<String, String> revertScript = (Map<String, String>) scriptData.getValue().get("revert");
 
-    return new FaultScript(id, decription,
+    return new FaultScript(id, description,
       failScript.get("URL"), failScript.get("args"),
       revertScript.get("URL"), revertScript.get("args"));
   }
