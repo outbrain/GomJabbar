@@ -57,7 +57,7 @@ public class GomJabbarServer {
     return ServerBuilder.newBuilder()
       .contextPath(CTX_PATH)
       .configure(builder -> builder.usePort(port).requestTimeout(requestTimeout, TimeUnit.SECONDS))
-      .service(builder -> builder.register(new GomJabbarServiceImpl(FaultInjectors.defaultFaultInjectors(configuration.scripts), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
+      .service(builder -> builder.register(new GomJabbarServiceImpl(FaultInjectors.defaultFaultInjectors(configuration), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
       .withExtension(registerMappingService("/endpoints"))
       .build();
   }

@@ -20,6 +20,12 @@ filters:
     exclude:
     # a list of tags used for excluding targets containing these tags (can be empty)
 
+#commands:
+#  my_fault_command:
+#    description: "Injects a fault"
+#    fail: "echo 'not really'"
+#    revert: "echo 'reverted'"
+
 #scripts:
 #  My_Fault_Script:
 #    description: "Fails stuff"

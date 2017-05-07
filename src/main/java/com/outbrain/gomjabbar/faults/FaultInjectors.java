@@ -2,6 +2,7 @@ package com.outbrain.gomjabbar.faults;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.outbrain.gomjabbar.config.Configuration;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,8 +23,7 @@ public class FaultInjectors {
     faultInjectors.forEach(faultInjector -> this.faultInjectors.put(faultInjector.id(), faultInjector));
   }
 
-  // TODO externalize
-  public static FaultInjectors defaultFaultInjectors(Collection<FaultScript> scripts) {
+  public static FaultInjectors defaultFaultInjectors(final Configuration configuration) {
     final String authToken = System.getProperty("com.outbrain.gomjabbar.rundeckAuthToken");
     final String runDeckHost = System.getProperty("com.outbrain.gomjabbar.rundeckHost");
     final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
@@ -34,11 +34,24 @@ public class FaultInjectors {
     faultInjectors.add(new InitdStopper(rundeckCommandExecutor));
     faultInjectors.add(new SIGKILLer(rundeckCommandExecutor));
 
-    if (scripts != null) {
-      scripts.forEach(e -> faultInjectors.add(new FaultScriptInjector(rundeckCommandExecutor, e)));
-    }
+    faultInjectors.addAll(configBasedInjectors(configuration, rundeckCommandExecutor));
 
     return new FaultInjectors(Lists.newArrayList(faultInjectors));
+  }
+
+  private static LinkedList<FaultInjector> configBasedInjectors(Configuration configuration, RundeckCommandExecutor rundeckCommandExecutor) {
+    LinkedList<FaultInjector> faultInjectors = new LinkedList<>();
+
+    if (configuration != null) {
+      if (configuration.scripts != null) {
+        configuration.scripts.forEach(e -> faultInjectors.add(new FaultScriptInjector(rundeckCommandExecutor, e)));
+      }
+      if (configuration.commands != null) {
+        configuration.commands.forEach(e -> faultInjectors.add(new FaultCommandInjector(rundeckCommandExecutor, e)));
+      }
+    }
+
+    return faultInjectors;
   }
 
   public FaultInjector selectFaultInjector() {

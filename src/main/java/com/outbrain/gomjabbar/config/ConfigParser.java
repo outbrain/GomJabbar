@@ -1,5 +1,7 @@
 package com.outbrain.gomjabbar.config;
 
+import com.outbrain.gomjabbar.faults.BaseFaultData;
+import com.outbrain.gomjabbar.faults.FaultCommand;
 import com.outbrain.gomjabbar.faults.FaultScript;
 import com.outbrain.gomjabbar.targets.DefaultTargetsFilter;
 import com.outbrain.gomjabbar.targets.TargetFilters;
@@ -32,29 +34,49 @@ public class ConfigParser {
         (Map<String, Map<String, ?>>) yaml.load(configFileUrl.openStream());
 
       final TargetFilters targetFilters = parseFilters((Map<String, Map<String, List<String>>>) config.get("filters"));
-      final Collection<FaultScript> scripts = parseScripts((Map<String, Map<String, ?>>) config.get("scripts"));
+      final Collection<FaultScript> scripts = parseScripts((Map<String, Map<String, Object>>) config.get("scripts"));
+      final Collection<FaultCommand> commands = parseCommands((Map<String, Map<String, Object>>) config.get("commands"));
 
-      return new Configuration(targetFilters, scripts);
+      return new Configuration(targetFilters, scripts, commands);
     } catch (final IOException e) {
       throw new RuntimeException("failed to load config file from url: " + configFileUrl, e);
     }
 
   }
 
-  private static Collection<FaultScript> parseScripts(Map<String, Map<String, ?>> scripts) {
+  private static Collection<FaultCommand> parseCommands(Map<String, Map<String, Object>> commands) {
+    return null == commands ?
+      Collections.emptyList() :
+      commands.entrySet().stream().map(ConfigParser::parseCommand).collect(Collectors.toList());
+  }
+
+  private static FaultCommand parseCommand(Map.Entry<String, Map<String, Object>> commandData) {
+    BaseFaultData baseFaultData = parseBaseFaultData(commandData);
+    final String command = (String) commandData.getValue().get("fail");
+    final String revertCommand = (String) commandData.getValue().get("revert");
+
+    return new FaultCommand(baseFaultData, command, revertCommand);
+  }
+
+  private static BaseFaultData parseBaseFaultData(Map.Entry<String, Map<String, Object>> commandData) {
+    final String id = commandData.getKey();
+    final String description = (String) commandData.getValue().get("description");
+    return new BaseFaultData(id, description);
+  }
+
+  private static Collection<FaultScript> parseScripts(Map<String, Map<String, Object>> scripts) {
     return null == scripts ?
       Collections.emptyList() :
       scripts.entrySet().stream().map(ConfigParser::parseScript).collect(Collectors.toList());
   }
 
   @SuppressWarnings("unchecked")
-  private static FaultScript parseScript(final Map.Entry<String, Map<String, ?>> scriptData) {
-    final String id = scriptData.getKey();
-    final String description = (String) scriptData.getValue().get("description");
+  private static FaultScript parseScript(final Map.Entry<String, Map<String, Object>> scriptData) {
+    BaseFaultData baseFaultData = parseBaseFaultData(scriptData);
     final Map<String, String> failScript = (Map<String, String>) scriptData.getValue().get("fail");
     final Map<String, String> revertScript = (Map<String, String>) scriptData.getValue().get("revert");
 
-    return new FaultScript(id, description,
+    return new FaultScript(baseFaultData,
       failScript.get("URL"), failScript.get("args"),
       revertScript.get("URL"), revertScript.get("args"));
   }
