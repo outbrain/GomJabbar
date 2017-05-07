@@ -3,8 +3,10 @@ package com.outbrain.gomjabbar;
 import com.outbrain.gomjabbar.audit.AuditLog;
 import com.outbrain.gomjabbar.config.ConfigParser;
 import com.outbrain.gomjabbar.config.Configuration;
-import com.outbrain.gomjabbar.faults.DummyRemoteFailureInjector;
+import com.outbrain.gomjabbar.faults.BaseFaultData;
 import com.outbrain.gomjabbar.faults.Fault;
+import com.outbrain.gomjabbar.faults.FaultCommand;
+import com.outbrain.gomjabbar.faults.FaultCommandInjector;
 import com.outbrain.gomjabbar.faults.FaultInjector;
 import com.outbrain.gomjabbar.faults.FaultInjectors;
 import com.outbrain.gomjabbar.faults.RundeckCommandExecutor;
@@ -55,9 +57,10 @@ public class GomJaabbar {
   private static FaultInjectors loadFaultInjectors(final String authToken, final String runDeckHost) {
     // OK, this should load it from somewhere later...
     final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
-    final FaultInjector faultInjector = new DummyRemoteFailureInjector(rundeckCommandExecutor);
-//    final FaultInjector faultInjector = new DummyFault();
-//    final FaultInjector faultInjector = new InitdStopper(rundeckCommandExecutor);
+
+    final FaultCommand dummyCmd = new FaultCommand(new BaseFaultData("dummy", "harmless command"), "echo running", "echo reverted");
+    final FaultInjector faultInjector = new FaultCommandInjector(rundeckCommandExecutor, dummyCmd);
+
     return new FaultInjectors(Collections.singleton(faultInjector));
   }
 

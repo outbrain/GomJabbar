@@ -29,11 +29,7 @@ public class FaultInjectors {
     final RundeckCommandExecutor rundeckCommandExecutor = new RundeckCommandExecutor(authToken, runDeckHost);
 
     final LinkedList<FaultInjector> faultInjectors = new LinkedList<>();
-    faultInjectors.add(new DummyRemoteFailureInjector(rundeckCommandExecutor));
     faultInjectors.add(new DummyFault());
-    faultInjectors.add(new InitdStopper(rundeckCommandExecutor));
-    faultInjectors.add(new SIGKILLer(rundeckCommandExecutor));
-
     faultInjectors.addAll(configBasedInjectors(configuration, rundeckCommandExecutor));
 
     return new FaultInjectors(Lists.newArrayList(faultInjectors));

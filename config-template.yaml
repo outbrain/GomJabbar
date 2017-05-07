@@ -20,11 +20,21 @@ filters:
     exclude:
     # a list of tags used for excluding targets containing these tags (can be empty)
 
-#commands:
-#  my_fault_command:
-#    description: "Injects a fault"
-#    fail: "echo 'not really'"
-#    revert: "echo 'reverted'"
+commands:
+  harmless_remote_command:
+    description: "Runs a harmless shell command on remote targets - should take about 5 sec to complete"
+    fail: "echo 'module=${module} host=${host} serviceType=${serviceType}'; for i in `seq 1 5`; do echo $i; sleep 1; done\n"
+    revert: "echo 'reverted'"
+
+  graceful_shutdown:
+    description: "Gracefully shuts down services using init.d"
+    fail: "sudo service ${module} stop"
+    revert: "sudo service ${module} start"
+
+  graceless_shutdown:
+    description: "Brutally kills service instances"
+    fail: "sudo pkill -9 -f ${module}"
+    revert: "sudo service ${module} start"
 
 #scripts:
 #  My_Fault_Script:
