@@ -50,10 +50,11 @@ public class FaultCommandInjector implements FaultInjector {
   }
 
   private String formatCommand(final String command, final Target target) {
-    Map<String, String> valuesMap = new HashMap<>();
+    Map<Object, Object> valuesMap = new HashMap<>();
     valuesMap.put("host", target.getHost());
     valuesMap.put("module", target.getModule());
     valuesMap.put("serviceType", target.getServiceType());
+    valuesMap.putAll(System.getProperties());
 
     return new StrSubstitutor(valuesMap).replace(command);
   }

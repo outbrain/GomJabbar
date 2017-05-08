@@ -23,7 +23,7 @@ filters:
 commands:
   harmless_remote_command:
     description: "Runs a harmless shell command on remote targets - should take about 5 sec to complete"
-    fail: "echo 'module=${module} host=${host} serviceType=${serviceType}'; for i in `seq 1 5`; do echo $i; sleep 1; done\n"
+    fail: "echo 'homeDir=${user.dir} module=${module} host=${host} serviceType=${serviceType}'; for i in `seq 1 5`; do echo $i; sleep 1; done\n"
     revert: "echo 'reverted'"
 
   graceful_shutdown:
@@ -35,6 +35,11 @@ commands:
     description: "Brutally kills service instances"
     fail: "sudo pkill -9 -f ${module}"
     revert: "sudo service ${module} start"
+
+  traffic_controller:
+    description: "Introduces high latency, and packet loss"
+    fail: "DEV=`sudo route | grep default | awk \"'{print $NF}'\"`; sudo tc qdisc add dev $DEV root netem delay 300ms loss 5%; sudo tc -s qdisc"
+    revert: "sudo tc qdisc del dev `route | grep default | awk \"'{print $NF}'`\" root; sudo tc -s qdisc"
 
 #scripts:
 #  My_Fault_Script:
