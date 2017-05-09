@@ -37,11 +37,22 @@ public class ConfigParser {
       final Collection<FaultScript> scripts = parseScripts((Map<String, Map<String, Object>>) config.get("scripts"));
       final Collection<FaultCommand> commands = parseCommands((Map<String, Map<String, Object>>) config.get("commands"));
 
-      return new Configuration(targetFilters, scripts, commands);
+      final Class<?> commandExecutorFactoryClass = parseExecutionParams(config);
+
+      return new Configuration(targetFilters, scripts, commands, commandExecutorFactoryClass);
     } catch (final IOException e) {
       throw new RuntimeException("failed to load config file from url: " + configFileUrl, e);
     }
 
+  }
+
+  private static Class<?> parseExecutionParams(Map<String, Map<String, ?>> config) {
+    final String className = (String) config.get("execution").get("command_executor_factory");
+    try {
+      return Class.forName(className);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Failed to load command executor factory class: " + className, e);
+    }
   }
 
   private static Collection<FaultCommand> parseCommands(Map<String, Map<String, Object>> commands) {

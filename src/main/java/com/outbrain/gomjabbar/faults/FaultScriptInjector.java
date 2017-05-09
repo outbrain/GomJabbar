@@ -11,10 +11,10 @@ import java.util.Objects;
  */
 public class FaultScriptInjector implements FaultInjector {
 
-  private final RundeckCommandExecutor commandExecutor;
+  private final CommandExecutor commandExecutor;
   private final FaultScript faultScript;
 
-  FaultScriptInjector(final RundeckCommandExecutor commandExecutor, final FaultScript faultScript) {
+  FaultScriptInjector(final CommandExecutor commandExecutor, final FaultScript faultScript) {
     this.commandExecutor = Objects.requireNonNull(commandExecutor, "commandExecutor must not be null");
     this.faultScript = Objects.requireNonNull(faultScript, "faultScript must not be null");
   }

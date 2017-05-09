@@ -14,10 +14,10 @@ import java.util.Objects;
  */
 public class FaultCommandInjector implements FaultInjector {
 
-  private final RundeckCommandExecutor commandExecutor;
+  private final CommandExecutor commandExecutor;
   private final FaultCommand faultCommand;
 
-  public FaultCommandInjector(final RundeckCommandExecutor commandExecutor, final FaultCommand faultCommand) {
+  FaultCommandInjector(final CommandExecutor commandExecutor, final FaultCommand faultCommand) {
     this.commandExecutor = Objects.requireNonNull(commandExecutor, "commandExecutor must not be null");
     this.faultCommand = Objects.requireNonNull(faultCommand, "faultCommand must not be null");
   }

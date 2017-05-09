@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 /**
  * @author Eran Harel
  */
-public class RundeckCommandExecutor {
+class RundeckCommandExecutor implements CommandExecutor {
 
   private final String rundeckBaseUrl;
   private final String authToken;
 
   private final HttpClient httpClient;
 
-  public RundeckCommandExecutor(final String authToken, final String rundeckHost) {
+  private RundeckCommandExecutor(final String authToken, final String rundeckHost) {
     this.authToken = authToken;
     rundeckBaseUrl = String.format("https://%s:4443/api", rundeckHost);
     httpClient = new HttpClient.Builder()
@@ -30,10 +30,19 @@ public class RundeckCommandExecutor {
       .build();
   }
 
+  public static CommandExecutor createCommandExecutor() {
+    final String authToken = System.getProperty("com.outbrain.gomjabbar.rundeckAuthToken");
+    final String runDeckHost = System.getProperty("com.outbrain.gomjabbar.rundeckHost");
+
+    return new RundeckCommandExecutor(authToken, runDeckHost);
+  }
+
+  @Override
   public ComposableFuture<String> executeCommandAsync(final RemoteCommand command) {
     return executeRemoteAsync(command, "command");
   }
 
+  @Override
   public ComposableFuture<String> executeScriptByUrlAsync(final RemoteCommand command) {
     return executeRemoteAsync(command, "url");
   }
