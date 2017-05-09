@@ -33,12 +33,8 @@ public class RemoteCommand {
     return exec;
   }
 
-  public String getRundeckFilter() {
+  public String getFilter() {
     return "hostname: " + hosts.stream().collect(Collectors.joining(","));
-  }
-
-  public String getAnsibleFilter() {
-    return hosts.stream().collect(Collectors.joining(";"));
   }
 
   public String getProject() {
