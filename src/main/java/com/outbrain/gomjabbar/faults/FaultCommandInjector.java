@@ -45,8 +45,8 @@ public class FaultCommandInjector implements FaultInjector {
   }
 
   private ComposableFuture<String> execute(final Target target, final String command) {
-    final RundeckCommand rundeckCommand = RundeckCommand.Builder.forTarget(target.getHost()).buildCommand(formatCommand(command, target));
-    return commandExecutor.executeCommandAsync(rundeckCommand);
+    final RemoteCommand remoteCommand = RemoteCommand.Builder.forTarget(target.getHost()).buildCommand(formatCommand(command, target));
+    return commandExecutor.executeCommandAsync(remoteCommand);
   }
 
   private String formatCommand(final String command, final Target target) {

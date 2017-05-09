@@ -14,7 +14,7 @@ public class FaultScriptInjector implements FaultInjector {
   private final RundeckCommandExecutor commandExecutor;
   private final FaultScript faultScript;
 
-  public FaultScriptInjector(final RundeckCommandExecutor commandExecutor, final FaultScript faultScript) {
+  FaultScriptInjector(final RundeckCommandExecutor commandExecutor, final FaultScript faultScript) {
     this.commandExecutor = Objects.requireNonNull(commandExecutor, "commandExecutor must not be null");
     this.faultScript = Objects.requireNonNull(faultScript, "faultScript must not be null");
   }
@@ -42,7 +42,7 @@ public class FaultScriptInjector implements FaultInjector {
   }
 
   private ComposableFuture<String> execute(final Target target, final String scriptUrl, final String scriptArgs) {
-    final RundeckCommand command = RundeckCommand.Builder.forTarget(target.getHost()).buildScriptUrl(scriptUrl, scriptArgs);
+    final RemoteCommand command = RemoteCommand.Builder.forTarget(target.getHost()).buildScriptUrl(scriptUrl, scriptArgs);
     return commandExecutor.executeScriptByUrlAsync(command);
   }
 }

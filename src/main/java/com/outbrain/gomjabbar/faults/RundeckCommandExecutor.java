@@ -30,15 +30,15 @@ public class RundeckCommandExecutor {
       .build();
   }
 
-  public ComposableFuture<String> executeCommandAsync(final RundeckCommand command) {
+  public ComposableFuture<String> executeCommandAsync(final RemoteCommand command) {
     return executeRemoteAsync(command, "command");
   }
 
-  public ComposableFuture<String> executeScriptByUrlAsync(final RundeckCommand command) {
+  public ComposableFuture<String> executeScriptByUrlAsync(final RemoteCommand command) {
     return executeRemoteAsync(command, "url");
   }
 
-  private ComposableFuture<String> executeRemoteAsync(final RundeckCommand command, final String type) {
+  private ComposableFuture<String> executeRemoteAsync(final RemoteCommand command, final String type) {
     final RequestBuilder postBuilder = httpClient.post(String.format("%s/14/project/ops/run/%s?authtoken=%s", rundeckBaseUrl, type, authToken));
     return postBuilder.setContentType(ContentType.JSON)
       .addHeader("Accept", ContentType.JSON.responseEncoding())

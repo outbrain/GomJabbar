@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * @author Eran Harel
  */
-public class RundeckCommand {
+public class RemoteCommand {
 
   private final String project;
   private final Collection<String> hosts;
@@ -17,11 +17,11 @@ public class RundeckCommand {
   private final String argString;
 
   // I need to make some marshalers happy ;)
-  RundeckCommand() {
+  RemoteCommand() {
     this(null, null, null, null, null);
   }
 
-  private RundeckCommand(final String project, final Collection<String> hosts, final String command, final String url, final String argString) {
+  private RemoteCommand(final String project, final Collection<String> hosts, final String command, final String url, final String argString) {
     this.project = project;
     this.hosts = new ArrayList<>(hosts);
     this.exec = command;
@@ -33,8 +33,12 @@ public class RundeckCommand {
     return exec;
   }
 
-  public String getFilter() {
+  public String getRundeckFilter() {
     return "hostname: " + hosts.stream().collect(Collectors.joining(","));
+  }
+
+  public String getAnsibleFilter() {
+    return hosts.stream().collect(Collectors.joining(";"));
   }
 
   public String getProject() {
@@ -57,11 +61,11 @@ public class RundeckCommand {
       this.hosts = hosts;
     }
 
-    public static Builder forTarget(final String host) {
+    static Builder forTarget(final String host) {
       return forTarget(Collections.singleton(host));
     }
 
-    public static Builder forTarget(final Collection<String> hosts) {
+    static Builder forTarget(final Collection<String> hosts) {
       return new Builder(hosts);
     }
 
@@ -70,12 +74,12 @@ public class RundeckCommand {
       return this;
     }
 
-    public RundeckCommand buildCommand(final String command) {
-      return new RundeckCommand(project, hosts, command, null, null);
+    RemoteCommand buildCommand(final String command) {
+      return new RemoteCommand(project, hosts, command, null, null);
     }
 
-    public RundeckCommand buildScriptUrl(final String scriptUrl, final String scriptArgs) {
-      return new RundeckCommand(project, hosts, null, scriptUrl, scriptArgs);
+    RemoteCommand buildScriptUrl(final String scriptUrl, final String scriptArgs) {
+      return new RemoteCommand(project, hosts, null, scriptUrl, scriptArgs);
     }
   }
 }
