@@ -1,6 +1,6 @@
 execution:
-  # supported values: com.outbrain.gomjabbar.faults.RundeckCommandExecutor | ansible (TBD)
-  command_executor_factory: com.outbrain.gomjabbar.faults.RundeckCommandExecutor
+#  command_executor_factory: com.outbrain.gomjabbar.execution.RundeckCommandExecutor
+  command_executor_factory: com.outbrain.gomjabbar.execution.AnsibleCommandExecutor
 
 filters:
   clusters:

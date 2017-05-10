@@ -3,6 +3,7 @@ package com.outbrain.gomjabbar.faults;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.outbrain.gomjabbar.config.Configuration;
+import com.outbrain.gomjabbar.execution.CommandExecutor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

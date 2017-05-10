@@ -1,5 +1,7 @@
 package com.outbrain.gomjabbar.faults;
 
+import com.outbrain.gomjabbar.execution.CommandExecutor;
+import com.outbrain.gomjabbar.execution.RemoteCommand;
 import com.outbrain.gomjabbar.targets.Target;
 import com.outbrain.ob1k.concurrent.ComposableFuture;
 import com.outbrain.ob1k.concurrent.ComposableFutures;

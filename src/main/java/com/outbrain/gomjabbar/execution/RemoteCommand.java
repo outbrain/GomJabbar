@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar.faults;
+package com.outbrain.gomjabbar.execution;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +49,8 @@ public class RemoteCommand {
     return url;
   }
 
+  public Collection<String> hosts() { return Collections.unmodifiableCollection(hosts); }
+
   public static class Builder {
     private String project = "ops";
     private final Collection<String> hosts;
@@ -57,7 +59,7 @@ public class RemoteCommand {
       this.hosts = hosts;
     }
 
-    static Builder forTarget(final String host) {
+    public static Builder forTarget(final String host) {
       return forTarget(Collections.singleton(host));
     }
 
@@ -70,11 +72,11 @@ public class RemoteCommand {
       return this;
     }
 
-    RemoteCommand buildCommand(final String command) {
+    public RemoteCommand buildCommand(final String command) {
       return new RemoteCommand(project, hosts, command, null, null);
     }
 
-    RemoteCommand buildScriptUrl(final String scriptUrl, final String scriptArgs) {
+    public RemoteCommand buildScriptUrl(final String scriptUrl, final String scriptArgs) {
       return new RemoteCommand(project, hosts, null, scriptUrl, scriptArgs);
     }
   }

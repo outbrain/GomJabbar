@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar.faults;
+package com.outbrain.gomjabbar.execution;
 
 import com.outbrain.ob1k.concurrent.ComposableFuture;
 import com.outbrain.ob1k.concurrent.ComposableFutures;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * @author Eran Harel
  */
-class RundeckCommandExecutor implements CommandExecutor {
+public class RundeckCommandExecutor implements CommandExecutor {
 
   private final String rundeckBaseUrl;
   private final String authToken;

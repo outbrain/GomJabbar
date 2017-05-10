@@ -1,4 +1,4 @@
-package com.outbrain.gomjabbar.faults;
+package com.outbrain.gomjabbar.execution;
 
 import java.util.List;
 
