@@ -20,7 +20,7 @@ public class AnsibleCommandExecutor implements CommandExecutor {
 
   private static final Logger log = LoggerFactory.getLogger(AnsibleCommandExecutor.class);
   private static final String ANSIBLE = "ansible";
-  public static final String FAULT_COMMAND_PATH = "/tmp/fault-command";
+  private static final String FAULT_COMMAND_PATH = "/tmp/fault-command";
 
   public static CommandExecutor createCommandExecutor() {
     return new AnsibleCommandExecutor();
