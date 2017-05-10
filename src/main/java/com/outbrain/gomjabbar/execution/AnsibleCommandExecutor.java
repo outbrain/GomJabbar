@@ -2,7 +2,6 @@ package com.outbrain.gomjabbar.execution;
 
 import com.google.common.io.CharStreams;
 import com.outbrain.ob1k.concurrent.ComposableFuture;
-import com.outbrain.ob1k.concurrent.ComposableFutures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +19,8 @@ import static com.outbrain.ob1k.concurrent.ComposableFutures.submit;
 public class AnsibleCommandExecutor implements CommandExecutor {
 
   private static final Logger log = LoggerFactory.getLogger(AnsibleCommandExecutor.class);
+  private static final String ANSIBLE = "ansible";
+  public static final String FAULT_COMMAND_PATH = "/tmp/fault-command";
 
   public static CommandExecutor createCommandExecutor() {
     return new AnsibleCommandExecutor();
@@ -27,18 +28,21 @@ public class AnsibleCommandExecutor implements CommandExecutor {
 
   @Override
   public ComposableFuture<String> executeCommandAsync(RemoteCommand command) {
+    return execProcess(createCommand(command));
+  }
 
+  private ComposableFuture<String> execProcess(final List<String> command) {
     return submit(true, () -> {
-      final Process process = new ProcessBuilder(createCommand(command))
+      final Process process = new ProcessBuilder(command)
         .start();
-      process.waitFor(10, TimeUnit.SECONDS);
+      process.waitFor(20, TimeUnit.SECONDS);
 
       return CharStreams.toString(new InputStreamReader(process.getInputStream()));
     });
   }
 
   private List<String> createCommand(RemoteCommand command) {
-    final List<String> cmd = Arrays.asList("ansible", "-m", "raw", hostPattern(command), "-a", command.getExec());
+    final List<String> cmd = Arrays.asList(ANSIBLE, "-m", "raw", hostPattern(command), "-a", command.getExec());
 
     log.debug("ansible command: [{}]", cmd.stream().collect(Collectors.joining(" ")));
     return cmd;
@@ -50,7 +54,17 @@ public class AnsibleCommandExecutor implements CommandExecutor {
 
   @Override
   public ComposableFuture<String> executeScriptByUrlAsync(RemoteCommand command) {
-    return ComposableFutures.fromError(new UnsupportedOperationException("not implemented"));
+    final String hostPattern = hostPattern(command);
+    return copyScriptToRemoteTargets(hostPattern, command.getUrl())
+      .flatMap(getUrlOut -> {
+        log.debug("getUrlOut={}", getUrlOut);
+        return execProcess(Arrays.asList(ANSIBLE, "-m", "raw", hostPattern, "-a", FAULT_COMMAND_PATH+ " " + command.getArgString()));
+      });
+  }
+
+  private ComposableFuture<String> copyScriptToRemoteTargets(final String hostPattern, final String commandUrl) {
+    final String getUrlParams = String .format("url=%s dest=%s mode=0744 validate_certs=no", commandUrl, FAULT_COMMAND_PATH);
+    return execProcess(Arrays.asList(ANSIBLE, hostPattern, "-m", "get_url", "-a", getUrlParams));
   }
 
 }
