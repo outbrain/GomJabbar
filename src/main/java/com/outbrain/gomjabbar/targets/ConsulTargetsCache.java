@@ -7,7 +7,6 @@ import com.outbrain.ob1k.consul.ConsulAPI;
 import com.outbrain.ob1k.consul.ConsulCatalog;
 import com.outbrain.ob1k.consul.ConsulHealth;
 import com.outbrain.ob1k.consul.HealthInfoInstance;
-import com.outbrain.ob1k.consul.TagsUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -74,14 +73,8 @@ public class ConsulTargetsCache implements TargetsCollector {
     final List<HealthInfoInstance> instances = cache.get(dc).get(module);
     final HealthInfoInstance randomInstance = randomElement(instances);
 
-    return new Target(randomInstance.Node.Node, randomInstance.Service.Service, extractServicetype(randomInstance), instances.size(), randomInstance.Service.Tags);
+    return new Target(randomInstance.Node.Node, randomInstance.Service.Service, instances.size(), randomInstance.Service.Tags);
   }
-
-  private String extractServicetype(final HealthInfoInstance instance) {
-    final String servicetype = TagsUtil.extractTag(instance.Service.Tags, "servicetype");
-    return servicetype == null ? UNDEFINED : servicetype;
-  }
-
 
   private <T> T randomElement(final Collection<T> collection) {
     return collection.stream()

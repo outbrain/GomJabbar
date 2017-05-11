@@ -6,8 +6,6 @@ import com.outbrain.ob1k.concurrent.ComposableFutures;
 import com.outbrain.ob1k.consul.ConsulAPI;
 import com.outbrain.ob1k.consul.ConsulCatalog;
 import com.outbrain.ob1k.consul.ConsulHealth;
-import com.outbrain.ob1k.consul.HealthInfoInstance;
-import com.outbrain.ob1k.consul.TagsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +32,7 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
   private final ConsulCatalog catalog;
   private final TargetFilters targetFilters;
 
-  public ConsulBasedTargetsCollector(final ConsulHealth health, final ConsulCatalog catalog, final TargetFilters targetFilters) {
+  ConsulBasedTargetsCollector(final ConsulHealth health, final ConsulCatalog catalog, final TargetFilters targetFilters) {
     this.catalog = catalog;
     this.health = Objects.requireNonNull(health, "health must not be null");
     this.targetFilters = Objects.requireNonNull(targetFilters, "targetFilters must not be null");
@@ -68,12 +66,7 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
   private ComposableFuture<Target> chooseTarget(final String dc, final String module) {
     return health.fetchInstancesHealth(module, dc)
       .flatMap(instances ->
-        randomElement(instances, targetFilters.instanceFilter(), "instance").map(i -> new Target(i.Node.Node, i.Service.Service, extractServicetype(i), instances.size(), i.Service.Tags)));
-  }
-
-  private String extractServicetype(final HealthInfoInstance instance) {
-    final String servicetype = TagsUtil.extractTag(instance.Service.Tags, "servicetype");
-    return servicetype == null ? UNDEFINED : servicetype;
+        randomElement(instances, targetFilters.instanceFilter(), "instance").map(i -> new Target(i.Node.Node, i.Service.Service, instances.size(), i.Service.Tags)));
   }
 
   private <T> ComposableFuture<T> randomElement(final Collection<T> elements, final Predicate<T> filter, final String step) {
@@ -101,7 +94,7 @@ public class ConsulBasedTargetsCollector implements TargetsCollector {
 
     for (int i = 0; i < 100; i++) {
       final Target target = targetsCollector.chooseTarget().get(10, TimeUnit.SECONDS);
-      System.out.printf("%s(%d) %s host=%s, tags=%s\n", target.getModule(), target.getInstanceCount(), target.getServiceType(), target.getHost(), target.getTags());
+      System.out.printf("%s(%d) host=%s, tags=%s\n", target.getModule(), target.getInstanceCount(), target.getHost(), target.getTags());
     }
   }
 }

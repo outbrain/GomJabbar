@@ -20,14 +20,17 @@ filters:
   tags:
     include:
     # a list of tags targets must have to be included in the targets
-    # if empty, only excluded tags are considered
+    # if empty, only excluded tags are considered.
+    # example:
+    #- production
+    #- safe-for-chaos
     exclude:
     # a list of tags used for excluding targets containing these tags (can be empty)
 
 commands:
   harmless_remote_command:
     description: "Runs a harmless shell command on remote targets - should take about 5 sec to complete"
-    fail: "echo 'homeDir=${user.dir} module=${module} host=${host} serviceType=${serviceType}'; for i in `seq 1 5`; do echo $i; sleep 1; done\n"
+    fail: "echo 'homeDir=${user.dir} module=${module} host=${host}'; for i in `seq 1 5`; do echo $i; sleep 1; done\n"
     revert: "echo 'reverted'"
 
   graceful_shutdown:

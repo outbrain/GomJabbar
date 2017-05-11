@@ -55,7 +55,6 @@ public class FaultCommandInjector implements FaultInjector {
     Map<Object, Object> valuesMap = new HashMap<>();
     valuesMap.put("host", target.getHost());
     valuesMap.put("module", target.getModule());
-    valuesMap.put("serviceType", target.getServiceType());
     valuesMap.putAll(System.getProperties());
 
     return new StrSubstitutor(valuesMap).replace(command);

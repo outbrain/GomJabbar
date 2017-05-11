@@ -14,19 +14,17 @@ import java.util.Set;
 public class Target {
   private final String host;
   private final String module;
-  private final String serviceType;
   private final Set<String> tags;
   private final int instanceCount;
 
   Target() {
     // bahhhhhh
-    this("", "", "", 0, Collections.emptySet());
+    this("", "", 0, Collections.emptySet());
   }
 
-  public Target(final String host, final String module, final String serviceType, final int instanceCount, final Set<String> tags) {
+  public Target(final String host, final String module, final int instanceCount, final Set<String> tags) {
     this.host = Objects.requireNonNull(host, "host must not be null");
     this.module = Objects.requireNonNull(module, "module must not be null");
-    this.serviceType = Objects.requireNonNull(serviceType, "serviceType must not be null");
     this.tags = new HashSet<>(Optional.of(tags).orElse(new HashSet<>()));
     this.instanceCount = instanceCount;
   }
@@ -36,7 +34,6 @@ public class Target {
     return MoreObjects.toStringHelper(this)
       .add("module", module)
       .add("host", host)
-      .add("serviceType", serviceType)
       .add("instanceCount", instanceCount)
       .add("tags", tags)
       .toString();
@@ -50,9 +47,6 @@ public class Target {
     return module;
   }
 
-  public String getServiceType() {
-    return serviceType;
-  }
 
   public Set<String> getTags() {
     return Collections.unmodifiableSet(tags);
