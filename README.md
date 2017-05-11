@@ -5,7 +5,23 @@
 GomJabbar is a service inspired by [Netflix's ChaosMonkey](https://github.com/Netflix/chaosmonkey), 
 but unlike ChaosMonkey, it was designed to work with your private cloud infrastructure (i.e. your own data centers).
 
-The service exposes endpoints that allow you to randomly select targets, and trigger a selected fault. 
+The service exposes endpoints that allow you to randomly select targets, trigger a selected fault, and revert when needed. 
+
+## Why should I run GomJabbar?
+You can find the Netflix explanation [here](https://github.com/Netflix/SimianArmy/wiki/Chaos-Monkey#why-run-chaos-monkey).
+No point in copying that over ;)
+
+After running several chaos drills at Outbrain, I can assure you that doing this on a regular basis is priceless.
+During a midnight page most people won't fix anything, nor investigate too far, and the incident will usually end with a service restart.
+During a chaos drill we look deeper into the root causes, and try to learn what we need to fix, and where we need to improve.
+After every drill we conduct a quick take-in and implement the fixes as soon as possible.
+
+Running GomJabbar helps us validate our assumptions, our infrastructure, our resilience, and our fixes.
+
+### Supported faults
+GomJabbar supports an extensible fault injection mechanism, along with a configuration based fault triggering commands and scripts.
+The [example config file](config-template.yaml) contains examples ranging from harmless failures to graceful / graceless shutdowns and traffic control (network issues emulation).
+
 
 ## Integration
 ### Service Discovery
@@ -15,6 +31,3 @@ Future versions will integrate with other service discovery methods, and the too
 ### Fault Automation
 Gom Jabbar now integrates with [RunDeck](http://rundeck.org/), and [Ansible](http://docs.ansible.com/ansible/). 
 Future versions may provide other automation tools, or a built-in ssh capabilities / agents.
-
-## Why should I run GomJabbar?
-[TBD]
