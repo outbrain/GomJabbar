@@ -11,8 +11,8 @@ The service exposes endpoints that allow you to randomly select targets, trigger
 You can find the Netflix explanation [here](https://github.com/Netflix/SimianArmy/wiki/Chaos-Monkey#why-run-chaos-monkey).
 No point in copying that over ;)
 
-After running several chaos drills at Outbrain, I can assure you that doing this on a regular basis is priceless.
-During a midnight page most people won't fix anything, nor investigate too far, and the incident will usually end with a service restart.
+After running several chaos drills at Outbrain, I can assure you that doing this on a regular basis is extremely valueable.
+During a midnight page most people will not fix anything, nor investigate too far, and the incident will usually end with a service restart.
 During a chaos drill we look deeper into the root causes, and try to learn what we need to fix, and where we need to improve.
 After every drill we conduct a quick take-in and implement the fixes as soon as possible.
 
@@ -31,3 +31,10 @@ Future versions will integrate with other service discovery methods, and the too
 ### Fault Automation
 Gom Jabbar now integrates with [RunDeck](http://rundeck.org/), and [Ansible](http://docs.ansible.com/ansible/). 
 Future versions may provide other automation tools, or a built-in ssh capabilities / agents.
+
+## Getting Started - TBD
+* Starting GJ...
+* Selecting targets...
+* Triggering Failures...
+* Audit log...
+* Revert...
