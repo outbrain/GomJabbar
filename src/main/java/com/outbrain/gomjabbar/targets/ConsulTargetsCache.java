@@ -62,6 +62,9 @@ public class ConsulTargetsCache implements TargetsCollector {
   }
 
   private String chooseDC() {
+    if (cache.isEmpty()) {
+      throw new IllegalStateException("No data centers are present or all are filtered out");
+    }
     return randomElement(cache.keySet());
   }
 
