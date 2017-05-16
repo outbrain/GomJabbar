@@ -33,4 +33,4 @@ Gom Jabbar now integrates with [RunDeck](http://rundeck.org/), and [Ansible](htt
 Future versions may provide other automation tools, or a built-in ssh capabilities / agents.
 
 ## User Guide
-[User Guide](docs/user-guide.md)
+[User Guide](docs/user-guide.md) 

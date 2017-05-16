@@ -7,6 +7,95 @@ cd GomJabbar
 mvn clean install
 ```
 
+## Configuration
+The project ships with a [sample configuration file](../config-template.yaml) to get you started.
+The configuration allows you to filter out targets you don't want to test by including and excluding clusters, modules, and tags.
+
+### Failure Execution 
+Specify the remote comman executor class. This can be one of the class specified below or your own implementation.
+```yaml
+execution:
+#  command_executor_factory: com.outbrain.gomjabbar.execution.RundeckCommandExecutor
+  command_executor_factory: com.outbrain.gomjabbar.execution.AnsibleCommandExecutor
+```
+
+#### Creating a custom CommandExecutor
+Implement `CommandExecutor`:
+Specify a class name implementing a `public static CommandExecutor createCommandExecutor()` method, that will return your implementation.
+
+### Specifying Target Filters
+In order to avoid unnecessary risk you can filter out targets by including/excluding clusters, modules, and tags:
+
+...
+```yaml
+filters:
+  clusters:
+    include:    # a list of clusters to be included in the targets
+    # if empty, all non excluded clusters are included
+    exclude:
+    # a list of clusters to be excluded from the targets (can be empty)
+
+  modules:
+    include:
+    # a list of modules to be included in the targets
+    # if empty, all non excluded modules are included
+    exclude:
+    # a list of modules to be excluded from the targets (can be empty)
+
+  tags:
+    include:
+    # a list of tags targets must have to be included in the targets
+    # if empty, only excluded tags are considered.
+    # example:
+    #- production
+    #- safe-for-chaos
+    exclude:
+    # a list of tags used for excluding targets containing these tags (can be empty)
+```
+### Adding your failure commands
+You can specify which failure commands you'd like to execute.
+The keys are later used to trigger faults.
+Revert commands are optional.
+
+```yaml
+commands:
+  harmless_remote_command:
+    description: "Runs a harmless shell command on remote targets - should take about 5 sec to complete"
+    fail: "echo 'homeDir=${user.dir} module=${module} host=${host}'; for i in `seq 1 5`; do echo $i; sleep 1; done\n"
+    revert: "echo 'reverted'"
+
+  graceful_shutdown:
+    description: "Gracefully shuts down services using init.d"
+    fail: "sudo service ${module} stop"
+    revert: "sudo service ${module} start"
+
+  graceless_shutdown:
+    description: "Brutally kills service instances"
+    fail: "sudo pkill -9 -f ${module}"
+    revert: "sudo service ${module} start"
+
+  traffic_controller:
+    description: "Introduces high latency, and packet loss"
+    fail: "DEV=`sudo route | grep default | awk \"'{print $NF}'\"`; sudo tc qdisc add dev $DEV root netem delay 300ms loss 5%; sudo tc -s qdisc"
+    revert: "sudo tc qdisc del dev `route | grep default | awk \"'{print $NF}'`\" root; sudo tc -s qdisc"
+```
+
+### Adding your failure command scripts (fetch from url)
+You may also specify scripts that will be fetched from a URL and executed at the target host.
+Revert script is optional.
+
+```yaml
+scripts:
+  My_Fault_Script:
+    description: "Fails stuff"
+    fail:
+      URL: "http://my.script.com/script.sh"
+      args: "-f foo -b bar"
+    revert:
+      URL: "http://my.script.com/script.sh"
+      args: "-revert"
+```
+
 ## Starting GomJabbar
 To start the server simply call the suuplied startup script, 
 optionally providing extra arguments needed for configuring optional integration like rundeck: 
