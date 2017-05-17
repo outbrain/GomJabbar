@@ -55,6 +55,7 @@ filters:
 The items that are included and not in the exclude list will become valid targets for fault injection.
 
 Notes:
+* An empty filter, (i.e. not specifying any filtering rules), means EVERYTHING - use the entire discoverable healthy inventory.
 * Tags are a collection, thus the filtering rule  is service tags intersection with the filter include tags must not be empty,
 and the service tags intersection with the filter exclusion tags must be empty (disjoint).
 * We include only healthy targets. If a module instance is failing it's health check, 

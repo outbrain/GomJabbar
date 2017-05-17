@@ -11,6 +11,10 @@ The service exposes endpoints that allow you to randomly select targets, trigger
 You can find the Netflix explanation [here](https://github.com/Netflix/SimianArmy/wiki/Chaos-Monkey#why-run-chaos-monkey).
 No point in copying that over ;)
 
+The main idea is to reduce our fear from production (fear is the mind killer remember?). 
+If you want to learn how to improve your code, monitoring, and alerting system, 
+learn how to deal with production issues when you're awake and ready, this is the tool for you.
+
 After running several chaos drills at Outbrain, I can assure you that doing this on a regular basis is extremely valueable.
 During a midnight page most people will not fix anything, nor investigate too far, and the incident will usually end with a service restart.
 During a chaos drill we look deeper into the root causes, and try to learn what we need to fix, and where we need to improve.
