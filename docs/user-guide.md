@@ -66,6 +66,13 @@ You can specify which failure commands you'd like to execute.
 The keys are later used to trigger faults.
 Revert commands are optional.
 
+As you can see in the example below, you may use the following tokens in your commands:
+* `$(module}` - will be replaced with the consul module name
+* `$(host}` - will be replaced with the host name / address specified in consul
+* All [system properties](https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html) keys will be replaced with their appropriate values, e.g. `${user.dir}`. 
+For example, this can be used for passing secrets.
+
+
 ```yaml
 commands:
   harmless_remote_command:
