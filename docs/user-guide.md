@@ -26,7 +26,6 @@ Specify a class name implementing a `public static CommandExecutor createCommand
 ### Specifying Target Filters
 In order to avoid unnecessary risk you can filter out targets by including/excluding clusters, modules, and tags:
 
-...
 ```yaml
 filters:
   clusters:
@@ -52,6 +51,15 @@ filters:
     exclude:
     # a list of tags used for excluding targets containing these tags (can be empty)
 ```
+
+The items that are included and not in the exclude list will become valid targets for fault injection.
+
+Notes:
+* Tags are a collection, thus the filtering rule  is service tags intersection with the filter include tags must not be empty,
+and the service tags intersection with the filter exclusion tags must be empty (disjoint).
+* We include only healthy targets. If a module instance is failing it's health check, 
+it's considered invalid for fault injection for obvious reasons.
+
 ### Adding your failure commands
 You can specify which failure commands you'd like to execute.
 The keys are later used to trigger faults.
