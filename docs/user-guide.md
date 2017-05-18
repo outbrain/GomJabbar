@@ -132,6 +132,7 @@ When rundeck is used, please pass in the following system properties as well:
 When consul isn't installed on `localhost` please pass in the consul url like so:
 `-Dcom.outbrain.ob1k.consul.agent.address=consul-50001:8500`
 
+You may also pass system properties to be later used as token in your fault commands.
 
 ## REST API
 GomJabbar currently implements a REST API that allows you to fetch random targets, 
@@ -225,3 +226,6 @@ Or all triggered faults:
 ```bash
 curl "http://localhost:8080/gj/api/revertAll"
 ```
+
+At the moment running these reveret commands several times will rerun the provided revert code.
+Please make sure it's idempotent.

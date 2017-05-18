@@ -22,7 +22,7 @@ After every drill we conduct a quick take-in and implement the fixes as soon as 
 
 Running GomJabbar helps us validate our assumptions, our infrastructure, our resilience, and our fixes.
 
-### Supported faults
+## Supported faults
 GomJabbar supports an extensible fault injection mechanism, along with a configuration based fault triggering commands and scripts.
 The [example config file](config-template.yaml) contains examples ranging from harmless failures to graceful / graceless shutdowns and traffic control (network issues emulation).
 
