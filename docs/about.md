@@ -31,4 +31,33 @@ In some cases alerts should be triggered to let teams know that a manual interve
 After each chaos drill we conduct a quick take-in session for each of the triggered failures, 
 and investigate whether the system handled the failure case correctly, whether we installed a proper alerting strategy,
 and whether the team knew how to handle, and how to investigate the issue. 
-These take-ins lead to super valuable inputs, which we wouldn't collect any other way.
+These take-ins lead to super valuable inputs, which we probably wouldn't collect any other way.
+
+### How did we kick this off?
+
+Before we started running the chaos drills, there were a lot of concerns about the value of such drills, and the time it will require.
+What we did to mitigate this, was to understand what was bothering the teams. So here goes:
+* There's an obvious need to avoid unnecessary damage.
+  * We've created filters to ensure only approved targets get to participate in the drills. 
+  This has a side effect of pre-marking areas in the code we need to take care of.
+   * We currently schedule drills via statuspage.io to let teams get ready, and if there's a special kind of fault we're going to trigger
+   we explain it in advance.
+   * We started out from minor faults like graceful shutdowns, continued to graceless shutdowns, 
+   and moved on to more interesting testing like faulty network emulation.
+* We've measure the time teams spent on these drills. In practice, all teams spent very little time on these drills.
+   Most of the time spent, was on ensuring we have proper alerting, and correct resilience features in the clients, 
+   and this is actually something you need to do anyway. A little time was spent on understanding the failures.
+   At the end of the day, I've heard no complaints about interruptions, nor time waste.
+* We've made sure teams, and engineers on call were not left on their own. We wanted everybody to learn 
+from this drill, and when they were'nt sure how to proceed, we jumped in to help. It's important
+to make everyone feel safe about this drill, and remind everybody that we only want to learn and improve.
+
+   
+All that said, it's important to remember that we basically simulate issues that occur on a daily basis.
+It's only that when we do that in a controlled manner, it's easier to observe where are our blind spots, what knowledge are we lacking,
+and what we need to improve.
+ 
+### What next?
+
+Up until now, this drill was executed in a semi-automatic procedure. The next level is to let the teams run this drill 
+on a fixed interval, at a well known time. We will also add new kinds of failures, like disk space issues, power failures, etc.
