@@ -1,4 +1,4 @@
-# Failure Testing for your private cloud
+# Failure Testing for your private cloud (or why we've created GomJabbar)
 
 Here at Outbrain we manage quite a large scale deployment of hundreds of services / modules, 
 and thousands of hosts. We practice CI/CD, and implemented quite a sound infrastructure, 
@@ -61,3 +61,5 @@ and what we need to improve.
 
 Up until now, this drill was executed in a semi-automatic procedure. The next level is to let the teams run this drill 
 on a fixed interval, at a well known time. We will also add new kinds of failures, like disk space issues, power failures, etc.
+Moreover, so far, we were only brave enough to run this on applicative nodes, and there's not reason to stop there. 
+Data-stores, load-balancers, network switches, and the like are also on our radar in the near future.
