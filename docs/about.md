@@ -62,9 +62,31 @@ All that said, it's important to remember that we basically simulate failures th
 It's only that when we do that in a controlled manner, it's easier to observe where are our blind spots, what knowledge are we lacking,
 and what we need to improve.
  
-### What next?
+### Our roadmap - What next?
 
-Up until now, this drill was executed in a semi-automatic procedure. The next level is to let the teams run this drill 
-on a fixed interval, at a well known time. We will also add new kinds of failures, like disk space issues, power failures, etc.
-Moreover, so far, we were only brave enough to run this on applicative nodes, and there's no reason to stop there. 
+* Up until now, this drill was executed in a semi-automatic procedure. The next level is to let the teams run this drill 
+on a fixed interval, at a well known time. 
+* Add new kinds of failures, like disk space issues, power failures, etc.
+* So far, we were only brave enough to run this on applicative nodes, and there's no reason to stop there. 
 Data-stores, load-balancers, network switches, and the like are also on our radar in the near future.
+* Multi-target failure injection. 
+For example, inject a failure to a percentage of the instances of some module in a random cluster. 
+Yes, even a full cluster outage should be tested at some point, in case you were asking yourself. 
+
+## The GomJabbar Internals
+
+GomJabbar is basically an integration between a discovery system, a (fault) command execution scheduler, 
+and your desired configuration. 
+
+Upon startup, GomJabbar drills down via the discovery system, fetches the clusters, modules, and their instances, 
+and passes each via the filters provided in the configuration files. This process is also performed periodically.
+We currently support discovery via [consul](https://www.consul.io/), 
+but adding other methods of discovery is quite trivial.
+
+When a users wishes to trigger faults, GomJabbar selects a random target, and returns it to the user, 
+along with a token that identifies this target.
+The user can then trigger one of the configured fault commands, or scripts, on the random target.
+At this point GomJabbar uses the configured `CommandExecutor` in order to execute the remote commands on the target hosts.
+
+GomJabbar also maintains a audit log of all executions, which allows you to revert quickly in the face of a real production issue,
+or an unexpected catastrophe cause by this tool.
