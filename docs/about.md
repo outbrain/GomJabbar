@@ -112,3 +112,32 @@ At this point GomJabbar uses the configured `CommandExecutor` in order to execut
 
 GomJabbar also maintains a audit log of all executions, which allows you to revert quickly in the face of a real production issue,
 or an unexpected catastrophe cause by this tool.
+
+## What have we learned so far?
+
+If you've read so far, you may be asking yourself what's in it for me? What kind of lessons can I learn from these drills?
+
+We've actually found and fixed many issues by running these drills, and here's what we can share:
+
+1. We had broken monitoring and alerting around the detection of the integrity of our production environment.
+We wanted to make sure that everything that runs in our data-centers is managed, and at a well known (version, health, etc).
+We've found that we didn't compute the diff between the desired state, and the actual state properly, 
+due to reliance on bogus data-sources. This sort of bug attacked us from two sides: 
+once when we triggered graceful shutdowns, and once for graceless shutdowns.
+
+1. We've found services that had no owner, became obsolete, and were basically running unattended in production. The horror.
+
+1. During the faulty network emulations, we've found that we had clients that didn't implement proper resilience features,
+and caused cascading failures in the consumers several layers up our service stack. 
+We've also noticed that in some cases, the high latency also cascaded. 
+This was fixed by adding proper timeouts, double-dispatch, and circuit-breakers.
+    
+1. We've also found that these drills motivated developers to improve their knowledge about the metrics we expose, 
+logs, and the troubleshooting tools we provide. 
+
+## Conclusion
+
+We've found the chaos drills to be an incredibly useful technique, which helps us improve our resilience and integrity, 
+while helping everybody learn about how things work.
+We're by no means anywhere near perfection, and have a lot more to learn and to improve, 
+and we're hoping this exciting new tool will help us getting there. We hope you find it useful too ;) 
