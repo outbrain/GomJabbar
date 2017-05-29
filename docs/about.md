@@ -1,5 +1,9 @@
 # Failure Testing for your private cloud (or why we've created GomJabbar)
 
+**TL;DR** Chaos Drills cab contribute a lot to your services resilience, and it's actually quite a fun activity.
+ We've built a tool called [GomJabbar](https://github.com/outbrain/GomJabbar) to help you run those drills.
+---
+ 
 Here at Outbrain we manage quite a large scale deployment of hundreds of services / modules, 
 and thousands of hosts. We practice CI/CD, and implemented quite a sound infrastructure, 
 which we believe is scalable, performant, and resilient. 
@@ -40,19 +44,37 @@ These take-ins lead to super valuable inputs, which we probably wouldn't collect
 
 ### How did we kick this off?
 
-Before we started running the chaos drills, there were a lot of concerns about the value of such drills, and the time it will require.
-What we did to mitigate this, was to understand what was bothering the teams. So here goes:
+Before we started running the chaos drills, there were a lot of concerns about the value of such drills, 
+and the time it will require. Well, since eliminating our fear from production is one of the key goals of this activity, 
+we had to take care of that first. 
+
+```text
+    "I must not fear. 
+    Fear is the mind-killer. 
+    Fear is the little-death that brings total obliteration. 
+    I will face my fear. 
+    I will permit it to pass over me and through me. 
+    And when it has gone past I will turn the inner eye to see its path. 
+    Where the fear has gone there will be nothing. Only I will remain." 
+    
+    (Litany Against Fear - Frank Herbert - Dune)
+```
+
+Se we started a series of chats with the teams, in order to understand what was bothering them, and found ways to mitigate it. 
+So here goes:
+
 * There's an obvious need to avoid unnecessary damage.
   * We've created filters to ensure only approved targets get to participate in the drills. 
   This has a side effect of pre-marking areas in the code we need to take care of.
-   * We currently schedule drills via statuspage.io to let teams get ready, and if there's a special kind of fault we're going to trigger
-   we explain it in advance.
+   * We currently schedule drills via statuspage.io, so teams know when to be ready, and if the time is inappropriate, 
+   we reschedule.
+   * When we introduce a new kind of fault, we let everybody know, and explain what should they prepare for in advance.
    * We started out from minor faults like graceful shutdowns, continued to graceless shutdowns, 
    and moved on to more interesting testing like faulty network emulation.
 * We've measured the time teams spent on these drills, and it turned out to be negligible.
-   Most of the time spent, was on ensuring we have proper alerting, and correct resilience features in the clients, 
-   and this is actually something you need to do anyway. A little time was spent on understanding the failures.
-   At the end of the day, I've heard no complaints about interruptions, nor time waste.
+   Most of the time was spent on preparations. For example ensuring we have proper alerting, 
+   and correct resilience features in the clients.
+   This is actually something you need to do anyway. At the end of the day, I've heard no complaints about interruptions, nor time waste.
 * We've made sure teams, and engineers on call were not left on their own. We wanted everybody to learn 
 from this drill, and when they were'nt sure how to proceed, we jumped in to help. It's important
 to make everyone feel safe about this drill, and remind everybody that we only want to learn and improve.
