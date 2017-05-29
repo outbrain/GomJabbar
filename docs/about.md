@@ -1,6 +1,7 @@
 # Failure Testing for your private cloud (or why we've created GomJabbar)
 
-**TL;DR** Chaos Drills cab contribute a lot to your services resilience, and it's actually quite a fun activity.
+__TL;DR__
+Chaos Drills cab contribute a lot to your services resilience, and it's actually quite a fun activity.
  We've built a tool called [GomJabbar](https://github.com/outbrain/GomJabbar) to help you run those drills.
 ---
  
@@ -74,7 +75,7 @@ So here goes:
 * We've measured the time teams spent on these drills, and it turned out to be negligible.
    Most of the time was spent on preparations. For example ensuring we have proper alerting, 
    and correct resilience features in the clients.
-   This is actually something you need to do anyway. At the end of the day, I've heard no complaints about interruptions, nor time waste.
+   This is actually something you need to do anyway. At the end of the day, we've heard no complaints about interruptions, nor time waste.
 * We've made sure teams, and engineers on call were not left on their own. We wanted everybody to learn 
 from this drill, and when they were'nt sure how to proceed, we jumped in to help. It's important
 to make everyone feel safe about this drill, and remind everybody that we only want to learn and improve.
@@ -121,7 +122,7 @@ We've actually found and fixed many issues by running these drills, and here's w
 
 1. We had broken monitoring and alerting around the detection of the integrity of our production environment.
 We wanted to make sure that everything that runs in our data-centers is managed, and at a well known (version, health, etc).
-We've found that we didn't compute the diff between the desired state, and the actual state properly, 
+We've found that we didn't compute the difference between the desired state, and the actual state properly, 
 due to reliance on bogus data-sources. This sort of bug attacked us from two sides: 
 once when we triggered graceful shutdowns, and once for graceless shutdowns.
 
@@ -140,5 +141,5 @@ logs, and the troubleshooting tools we provide.
 We've found the chaos drills to be an incredibly useful technique, which helps us improve our resilience and integrity, 
 while helping everybody learn about how things work.
 We're by no means anywhere near perfection. 
-I'm actually pretty sure we'll find many many more issues we need to take care of.
+We're actually pretty sure we'll find many many more issues we need to take care of.
 We're hoping this exciting new tool will help us move to the next level, and we hope you find it useful too ;) 
