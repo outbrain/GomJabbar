@@ -139,5 +139,6 @@ logs, and the troubleshooting tools we provide.
 
 We've found the chaos drills to be an incredibly useful technique, which helps us improve our resilience and integrity, 
 while helping everybody learn about how things work.
-We're by no means anywhere near perfection, and have a lot more to learn and to improve, 
-and we're hoping this exciting new tool will help us getting there. We hope you find it useful too ;) 
+We're by no means anywhere near perfection. 
+I'm actually pretty sure we'll find many many more issues we need to take care of.
+We're hoping this exciting new tool will help us move to the next level, and we hope you find it useful too ;) 
