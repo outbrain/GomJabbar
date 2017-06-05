@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Parses the config file, (currently just the filters are extracted).
+ * Parses the config file. Duh.
  * @author Eran Harel
  */
 public class ConfigParser {

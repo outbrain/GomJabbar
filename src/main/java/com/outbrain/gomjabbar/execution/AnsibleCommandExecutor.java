@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import static com.outbrain.ob1k.concurrent.ComposableFutures.submit;
 
 /**
+ * An ansible based implementation for remote command executions.
  * @author Eran Harel
  */
 public class AnsibleCommandExecutor implements CommandExecutor {

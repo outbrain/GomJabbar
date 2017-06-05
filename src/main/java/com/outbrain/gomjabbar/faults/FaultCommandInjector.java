@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * A configurable (shell) fault command injector.
  * @author Eran Harel
  */
 public class FaultCommandInjector implements FaultInjector {

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
+ * An rundeck based implementation for remote command executions.
  * @author Eran Harel
  */
 public class RundeckCommandExecutor implements CommandExecutor {

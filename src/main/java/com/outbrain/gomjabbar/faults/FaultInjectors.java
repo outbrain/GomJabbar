@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
+ * A {@link FaultInjector} repository
  * @author Eran Harel
  */
 public class FaultInjectors {

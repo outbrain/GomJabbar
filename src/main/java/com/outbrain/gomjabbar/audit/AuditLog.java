@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * Audit operations facade
  * @author Eran Harel
  */
 public class AuditLog {
@@ -31,6 +32,10 @@ public class AuditLog {
     System.out.println("Audit Log will be written to " + logDir.toAbsolutePath());
   }
 
+  /**
+   * Records a fault execution in the log
+   * @param fault entry to log
+   */
   public void log(final Fault fault) {
     try (final BufferedWriter writer = Files.newBufferedWriter(Files.createTempFile(logDir, "fault", ""))) {
       objectMapper.writeValue(writer, fault);
@@ -39,6 +44,9 @@ public class AuditLog {
     }
   }
 
+  /**
+   * @return a listing of all recorded executions
+   */
   public Map<String, Fault> list() {
     try {
       return Files.list(logDir)
@@ -58,6 +66,11 @@ public class AuditLog {
     }
   }
 
+  /**
+   * Retrieves a fault execution by it's id
+   * @param faultId the execution token
+   * @return the specified fault execution
+   */
   public Optional<Fault> findFault(final String faultId) {
     return readFault(Paths.get(logDir.toString(), faultId));
   }

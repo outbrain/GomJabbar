@@ -9,6 +9,8 @@ import com.outbrain.ob1k.concurrent.ComposableFutures;
 import java.util.Objects;
 
 /**
+ * A configurable fault script injector.
+ * Scripts are usually downloaded and executed on the remote targets, depending on the command executor implementation.
  * @author Eran Harel
  */
 public class FaultScriptInjector implements FaultInjector {
