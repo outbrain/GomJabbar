@@ -29,27 +29,37 @@ In order to avoid unnecessary risk you can filter out targets by including/exclu
 ```yaml
 filters:
   clusters:
-    include:    # a list of clusters to be included in the targets
+    include:
+    # a list of clusters to be included in the targets
     # if empty, all non excluded clusters are included
+    # example:
+    - included_dc1
     exclude:
     # a list of clusters to be excluded from the targets (can be empty)
-
+    # example:
+    - excluded_dc1
   modules:
     include:
     # a list of modules to be included in the targets
     # if empty, all non excluded modules are included
     exclude:
     # a list of modules to be excluded from the targets (can be empty)
+    # example:
+    - unsafe_module1
+    - unsafe_module2
 
   tags:
     include:
     # a list of tags targets must have to be included in the targets
     # if empty, only excluded tags are considered.
     # example:
-    #- production
-    #- safe-for-chaos
+    - production
+    - safe-for-chaos
     exclude:
     # a list of tags used for excluding targets containing these tags (can be empty)
+    # example:
+    - test
+    - unsafe
 ```
 
 The items that are included and not in the exclude list will become valid targets for fault injection.
