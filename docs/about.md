@@ -62,7 +62,7 @@ we had to take care of that first.
     (Litany Against Fear - Frank Herbert - Dune)
 ```
 
-Se we started a series of chats with the teams, in order to understand what was bothering them, and found ways to mitigate it. 
+So we started a series of chats with the teams, in order to understand what was bothering them, and found ways to mitigate it. 
 So here goes:
 
 * There's an obvious need to avoid unnecessary damage.
