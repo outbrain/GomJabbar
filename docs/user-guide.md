@@ -38,6 +38,8 @@ filters:
     # a list of clusters to be excluded from the targets (can be empty)
     # example:
     - excluded_dc1
+
+  # modules are mapped to consul service names
   modules:
     include:
     # a list of modules to be included in the targets
@@ -48,6 +50,7 @@ filters:
     - unsafe_module1
     - unsafe_module2
 
+  # tags are the mapped to the tags provided when the module instances are being registered in the discovery system
   tags:
     include:
     # a list of tags targets must have to be included in the targets
