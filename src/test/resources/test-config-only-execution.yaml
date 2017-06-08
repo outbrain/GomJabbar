@@ -1,0 +1,19 @@
+execution:
+  command_executor_factory: java.lang.Object
+
+filters:
+  clusters:
+    include:
+    exclude:
+
+  modules:
+    include:
+    exclude:
+
+  tags:
+    include:
+    exclude:
+
+commands:
+
+scripts:

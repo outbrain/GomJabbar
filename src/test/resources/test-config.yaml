@@ -1,0 +1,44 @@
+execution:
+  command_executor_factory: com.outbrain.gomjabbar.execution.AnsibleCommandExecutor
+
+filters:
+  clusters:
+    include:
+    - included_dc1
+    - included_dc2
+    exclude:
+    - excluded_dc1
+    - excluded_dc2
+
+  # modules are mapped to consul service names
+  modules:
+    include:
+    - safe_module1
+    - safe_module2
+    exclude:
+    - unsafe_module1
+    - unsafe_module2
+
+  tags:
+    include:
+    - inc
+    - lude
+    exclude:
+    - ex
+    - clude
+
+commands:
+  harmless_remote_command:
+    description: "I'm a command"
+    fail: "echo 'hello'"
+    revert: "echo 'reverted'"
+
+scripts:
+  my_script:
+    description: "Fails stuff"
+    fail:
+      URL: "http://my.script.com/script.sh"
+      args: "-f foo -b bar"
+    revert:
+      URL: "http://my.script.com/script.sh"
+      args: "-revert"

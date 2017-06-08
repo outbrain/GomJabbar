@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class ConfigParser {
 
   @SuppressWarnings("unchecked")
   public static Configuration parseConfiguration(final URL configFileUrl) {
+    Objects.requireNonNull(configFileUrl, "configFileUrl must not be null");
     final Yaml yaml = new Yaml();
     try {
       @SuppressWarnings("unchecked")
@@ -47,7 +49,9 @@ public class ConfigParser {
   }
 
   private static Class<?> parseExecutionParams(Map<String, Map<String, ?>> config) {
-    final String className = (String) config.get("execution").get("command_executor_factory");
+    final Map<String, ?> execution = config.get("execution");
+    Objects.requireNonNull(execution, "Please specify a remote command execution implementation class");
+    final String className = (String) execution.get("command_executor_factory");
     try {
       return Class.forName(className);
     } catch (Exception e) {
