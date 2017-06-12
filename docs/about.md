@@ -100,7 +100,13 @@ Yes, even a full cluster outage should be tested at some point, in case you were
 ## The GomJabbar Internals
 
 GomJabbar is basically an integration between a discovery system, a (fault) command execution scheduler, 
-and your desired configuration. 
+and your desired configuration. The configuration contains mostly the target filtering rules, and fault commands.
+ 
+The fault commands are completely up to you. Out of the box we provide the following example commands,
+ (but you can really write your own script to do what suits your platform, needs, and architecture): 
+* Graceful shutdowns of service instances.
+* Graceless shutdowns of service instances.
+* Faulty Network Emulation (high latency, and packet-loss).
 
 Upon startup, GomJabbar drills down via the discovery system, fetches the clusters, modules, and their instances, 
 and passes each via the filters provided in the configuration files. This process is also performed periodically.
