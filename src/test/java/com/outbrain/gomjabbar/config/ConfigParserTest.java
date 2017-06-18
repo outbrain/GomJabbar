@@ -1,12 +1,11 @@
 package com.outbrain.gomjabbar.config;
 
+import com.outbrain.gomjabbar.testutil.HealthInfoInstanceHealper;
 import com.outbrain.ob1k.consul.HealthInfoInstance;
 import org.junit.Test;
 
 import java.net.URL;
 
-import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -41,7 +40,7 @@ public class ConfigParserTest {
     // empty filters mean everything discoverable
     assertTrue("dcFilter", configuration.targetFilters.dcFilter().test("dc1"));
     assertTrue("moduleFilter", configuration.targetFilters.moduleFilter().test("mod1"));
-    assertTrue("instanceFilter", configuration.targetFilters.instanceFilter().test(createHealthInfoInstance()));
+    assertTrue("instanceFilter", configuration.targetFilters.instanceFilter().test(HealthInfoInstanceHealper.createMockHealthInfoInstance("meh")));
 
 
     assertTrue("commands should be empty", configuration.commands.isEmpty());
@@ -59,7 +58,7 @@ public class ConfigParserTest {
     assertTrue("moduleFilter should pass for included module", configuration.targetFilters.moduleFilter().test("safe_module2"));
     assertFalse("moduleFilter should fail for non included module", configuration.targetFilters.moduleFilter().test("999"));
     assertFalse("moduleFilter should fail for excluded module", configuration.targetFilters.moduleFilter().test("unsafe_module1"));
-    final HealthInfoInstance healthInfoInstance = createHealthInfoInstance();
+    final HealthInfoInstance healthInfoInstance = HealthInfoInstanceHealper.createMockHealthInfoInstance("meh");
     assertFalse("instanceFilter should fail for no matching tags", configuration.targetFilters.instanceFilter().test(healthInfoInstance));
     healthInfoInstance.Service.Tags.add("inc");
     assertTrue("instanceFilter should pass for included tags", configuration.targetFilters.instanceFilter().test(healthInfoInstance));
@@ -71,22 +70,4 @@ public class ConfigParserTest {
     assertFalse("missing scripts", configuration.scripts.isEmpty());
   }
 
-
-  private HealthInfoInstance createHealthInfoInstance() {
-    final HealthInfoInstance.Node node = new HealthInfoInstance.Node();
-    node.Node = "myservice.node";
-    node.Address = "1.1.1.1";
-
-    final HealthInfoInstance.Service service = new HealthInfoInstance.Service();
-    service.Tags = newHashSet("httpPort-8080", "contextPath-/");
-    service.Address = "5.5.5.5";
-
-    final HealthInfoInstance instance = new HealthInfoInstance();
-
-    instance.Node = node;
-    instance.Service = service;
-    instance.Checks = emptyList();
-
-    return instance;
-  }
 }
