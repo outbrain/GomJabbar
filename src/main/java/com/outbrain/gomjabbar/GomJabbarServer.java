@@ -1,5 +1,6 @@
 package com.outbrain.gomjabbar;
 
+import com.codahale.metrics.MetricRegistry;
 import com.outbrain.gomjabbar.audit.AuditLog;
 import com.outbrain.gomjabbar.config.ConfigParser;
 import com.outbrain.gomjabbar.config.Configuration;
@@ -9,6 +10,7 @@ import com.outbrain.gomjabbar.targets.TargetsCollector;
 import com.outbrain.ob1k.consul.ConsulAPI;
 import com.outbrain.ob1k.server.Server;
 import com.outbrain.ob1k.server.builder.ServerBuilder;
+import com.outbrain.swinfra.metrics.codahale3.CodahaleMetricsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +58,10 @@ public class GomJabbarServer {
     final long requestTimeout = 30;
     return ServerBuilder.newBuilder()
       .contextPath(CTX_PATH)
-      .configure(builder -> builder.usePort(port).requestTimeout(requestTimeout, TimeUnit.SECONDS))
+      .configure(builder -> {
+        builder.usePort(port).requestTimeout(requestTimeout, TimeUnit.SECONDS);
+        builder.useMetricFactory(new CodahaleMetricsFactory(new MetricRegistry()));
+      })
       .service(builder -> builder.register(new GomJabbarServiceImpl(FaultInjectors.defaultFaultInjectors(configuration), creteTargetsCollector(), new AuditLog()), SERVICE_PATH))
       .withExtension(registerMappingService("/endpoints"))
       .build();

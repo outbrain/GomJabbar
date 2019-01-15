@@ -5,7 +5,7 @@
   <groupId>com.outbrain.swinfra</groupId>  
   <packaging>jar</packaging>
   <name>GomJabbar</name>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
 
   <licenses>
     <license>
@@ -40,7 +40,7 @@
     <java.compiler.source>1.8</java.compiler.source>
     <java.compiler.target>1.8</java.compiler.target>
 
-    <ob1k.version>0.198</ob1k.version>
+    <ob1k.version>0.289</ob1k.version>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
     <findbugs.skip>false</findbugs.skip>
   </properties>
