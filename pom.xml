@@ -56,7 +56,7 @@
     <repository>
       <id>jcenter</id>
       <name>jcenter</name>
-      <url>http://jcenter.bintray.com</url>
+      <url>https://jcenter.bintray.com</url>
       <snapshots><enabled>false</enabled></snapshots>
     </repository>
   </repositories>
